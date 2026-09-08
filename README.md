@@ -5,8 +5,9 @@ Interaktivní trenér čínštiny: HSK 1 (171 slov) + HSK 2 (138 slov), pinyin s
 **Živá verze:** https://Aldocooek.github.io/hanyu-trainer/
 
 ## Módy
-- 🏠 Domů (denní cíl 50 XP, streak, rychlé akce)
-- ⚡ Rychlý mix (12 kol všeho) + 🩹 Opravna chyb
+- 🏠 Domů (denní cíl 80 XP, streak, rychlé akce)
+- 📖 Slovník (pinyin + česky, filtry, klepnutí = zvuk)
+- ⚡ Rychlý mix (12 kol všeho) + 🩹 Opravna chyb + 🎵 Tóny (párový drill, mužský hlas)
 - 🃏 Kartičky (flashcards s chytrým opakováním chyb)
 - 🧩 Spojovačka 4×4 (Duolingo styl)
 - 🔊 Poslech — čínština → čeština i obráceně, bez mluvení

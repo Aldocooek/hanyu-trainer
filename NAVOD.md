@@ -105,3 +105,10 @@ Požadavek: telefon poslouchá a hodnotí, **data nikam neodejdou**. Verdikt po 
 - **Proč:** výzkum (Wang et al. 1999; Li 2016; Chandrasekaran et al. 2013): tóny se učí párově od lehkých (1–3) po nejtěžší (2–3), ve **dvojslabičných** slovech (ne izolované slabiky), s okamžitým minimálním feedbackem, s variabilitou mluvčích.
 - **Jak:** 🎵 Tóny — 12 kol, pár 1–3 → … → 2–3, slyšíš slovo **mužským hlasem Yunxi** (97 slov, `audio/m_<id>.mp3`, `scripts/gen_tones.py`), tipuješ tón 1./2. slabiky (pinyin schválně nevidíš). Fallback: Xiaoxiao → hlas zařízení.
 - **Denní cíl 80 XP.** Znaky: na přání zůstává pinyin-first napořád, žádný znakový kurz se nechystá.
+
+## 13) v6: slovník místo Anki + oprava zaseklé cache + testy
+- **Proč jsi viděl starou verzi:** service worker měl pořád `hanyu-v3`, takže prohlížeč servíroval staré soubory (důkaz: staré popisky úrovní na tvém screenshotu). Oprava: SW `hanyu-v6` + **verze v patičce** — když tam není v6, podrž refresh / odeber a znovu přidej ikonu na plochu.
+- **📖 Slovník (6. záložka dole)** nahrazuje Anki tab: pinyin + česky, **nula znaků**, klepnutí = přehrát, ✓ = umím, hledání bez diakritiky (kafe → kāfēi), filtry HSK 1/2 + kategorie + třetiny. Anki soubory zůstávají v repu (skripty), jen nejsou v UI.
+- **Kliknutí na slovo = přehrát** (kartičky, drill, tóny).
+- **Viditelné balíky:** pod každou úrovní je „Balík: N slov" — změna úrovně opravdu mění slova (ověřeno testem L1 = 57 slov).
+- **Testy:** `scripts/qa_func.py` — 21 funkčních testů v headless Chromiu (Playwright): kartičky bez znaků, XP, drill kola, tóny, slovník filtry, HSK přepínač, témata, 0 JS chyb. Ano — Chromium testy běží od začátku (`qa_shots.py` screenshoty všech záložek mobil + desktop).
