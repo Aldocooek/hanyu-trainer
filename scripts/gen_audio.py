@@ -1,7 +1,8 @@
 """Generate bundled TTS audio for Hanyu Trainer (reusable for HSK 2+).
 
 Voice: Microsoft Edge neural zh-CN-XiaoxiaoNeural (free, no key), rate -10% for learners.
-Reads words.js, writes audio/w{id}.mp3 (words) + audio/s{idx}.mp3 (sentences).
+Reads words.js + words_hskN.js, writes audio/w{id}.mp3 (words) + audio/s{idx}.mp3
+(sentences, idx = merged SENTENCES order — APPEND ONLY, never reorder).
 Idempotent: skips files that already exist.
 
 Usage:
@@ -17,6 +18,7 @@ import edge_tts
 VOICE = "zh-CN-XiaoxiaoNeural"
 RATE = "-10%"
 OUT = "audio"
+DATA_FILES = ["words.js", "words_hsk2.js"]
 
 
 async def gen(text, path):
@@ -27,9 +29,13 @@ async def gen(text, path):
 
 
 async def main(which):
-    src = open("words.js", encoding="utf-8").read()
-    words = re.findall(r'\{id:(\d+),hz:"([^"]+)"', src)
-    sents = re.findall(r'full:"([^"]+)"', src)
+    words, sents = [], []
+    for fn in DATA_FILES:
+        if not os.path.exists(fn):
+            continue
+        src = open(fn, encoding="utf-8").read()
+        words += re.findall(r'\{id:(\d+),hz:"([^"]+)"', src)
+        sents += re.findall(r'full:"([^"]+)"', src)
     tasks = []
     if which in ("words", "all"):
         tasks += [(f"w{wid}", hz, f"{OUT}/w{wid}.mp3") for wid, hz in words]

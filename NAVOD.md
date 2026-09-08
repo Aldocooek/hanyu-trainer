@@ -89,8 +89,14 @@ Požadavek: telefon poslouchá a hodnotí, **data nikam neodejdou**. Verdikt po 
 `python3 scripts/qa_shots.py` — všech 6 záložek na desktopu (1280) i mobilu (390), 0 JS chyb. Nalezen a opraven 1 problém: fixní patička mohla na úzkém mobilu překrývat tlačítka (padding dna 90 → 130 px).
 
 ## 10) v3: hravý design + PWA + denní režim
-- **Design:** Duolingo styl — chunky 3D tlačítka, spodní tab bar (Domů / Karty / Mix / Opravna / Více), **tónové barvy pinyinu** (1🔴 2🟠 3🟢 4🔵), světlá + tmavá + systém, Baloo 2 font.
+- **Design:** Duolingo styl — chunky 3D tlačítka, spodní tab bar (Domů / Karty / Mix / Opravna / Více), **tónové barvy pinyinu** (1🔴 2🟠 3🟢 4🔵), světlá + tmavá + systém, Baloo 2 font. Desktop ≥960px: široký layout (1040px, 4 sloupce).
 - **Domů:** kroužek denního cíle (50 XP), streak, rychlé akce, banner když hoří streak.
 - **⚡ Mix:** 12 kol (poslech/karty/věty/spojovačka), souhrn + confetti. **🩹 Opravna:** totéž, jen slabá slova.
 - **Nastavení:** vzhled, animace (auto/plné/klidné — auto pozná slabé zařízení), pomalý zvuk 0.7×, vibrace (Android), připomínka streaku, smazat postup. Desktop: klávesy (→, mezerník, 1/2, 1–4 v poslechu).
 - **PWA:** `manifest.json` + `sw.js` (app shell offline, audio se docachuje po prvním přehrání) + ikony (`scripts/make_icons.py`). Instalace: v mobilu Otevřít → Sdílet → „Přidat na plochu". Odznak s dluhem XP na ikonce (Android/Chrome), notifikace při otevření když hoří streak. Upřímná limita: web neumí budík bez serveru; iPhone nevibruje.
+
+## 11) v4: HSK 1–6 architektura + pinyin-first
+- **Data:** `words.js` (HSK 1, id 1–171) + `words_hsk2.js` (HSK 2, id 1001–1138, 138 slov + 20 vět). HSK 2 pinyin ověřen proti open listu (drkameleon/complete-hsk-vocabulary, MIT); opraveny tóny (吧 ba, 便宜 piányi, 离 lí, 还 hái, 得 de, 着 zhe) + ručně doplněno 以前/以后/为什么/常常/上网/一些. Pravidlo: APPEND ONLY (audio/indexy).
+- **Přepínač:** ⚙️ Nastavení → Moje úroveň HSK (default HSK 1, ty si měníš sám). Pooly kumulativní, L1–L3 = třetiny poolu, věty filtrovány úrovní, statistiky/patka/seznam/CSV podle úrovně. HSK 3–6: sloty zamčené, soubory words_hsk3.js… připravené.
+- **Zobrazení (pinyin-first):** ⚙️ → 🔤 Zobrazení: Pouze pinyin (default — žádné znaky, velký barevný pinyin) / Pinyin + znaky / Pouze znaky. Zvuk pořád jede ze znaků (TTS by pinyin zkazilo). Větné dílky ukazují pinyin dílků.
+- **Anki:** `.apkg` zvlášť pro HSK 1 a HSK 2 (se zvukem), CSV podle aktuální úrovně.

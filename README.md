@@ -1,6 +1,6 @@
-# 🇨🇳 Hanyu Trainer — čínština HSK 1 (česky)
+# 🇨🇳 Hanyu Trainer — čínština HSK 1–2 (česky, pinyin-first)
 
-Interaktivní trenér čínštiny: 171 slov HSK 1 (zjednodušené znaky + pinyin s tóny + čeština) + 30 vět na skládání.
+Interaktivní trenér čínštiny: HSK 1 (171 slov) + HSK 2 (138 slov), pinyin s tóny + čeština, 50 vět, neuronový zvuk. Znaky volitelné (pinyin-first default).
 
 **Živá verze:** https://Aldocooek.github.io/hanyu-trainer/
 
