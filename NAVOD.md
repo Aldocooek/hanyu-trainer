@@ -1,9 +1,14 @@
 # Hanyu Trainer — čínština HSK 1 (171 slov, česky)
 
 Co máš v `chinese-trainer/`:
-- `index.html` — web trenér (otevři dvojklikem, nebo hoď na mobil). Funguje offline, zvuk = hlas zařízení zdarma.
+- `index.html` — web trenér (otevři dvojklikem, nebo hoď na mobil). Zvuk = nahraný neuronový hlas (offline MP3), záloha = hlas zařízení.
 - `words.js` — databáze 171 slov (zjednodušené znaky + pinyin s tóny + čeština) + 30 vět na skládání
-- `hanyu_hsk1_cz.csv` — hotový import do Anki (středník `;`, UTF-8 s BOM)
+- `audio/` — 201× MP3 (171 slov + 30 vět), hlas Xiaoxiao, celkem 1,65 MB
+- `hanyu_hsk1_audio.apkg` — hotový Anki balíček SE ZVUKEM (doporučeno)
+- `hanyu_hsk1_cz.csv` — import do Anki bez zvuku (středník `;`, UTF-8 s BOM)
+- `scripts/gen_audio.py` — vygeneruje audio znovu (i pro budoucí HSK 2)
+- `scripts/build_apkg.py` — vyrobí .apkg z words.js + audio/
+- `scripts/qa_shots.py` — screenshot QA (desktop + mobil, všech 6 záložek)
 - `NAVOD.md` — tenhle soubor
 
 ## 1) Web trenér (doporučeno na začátek)
@@ -13,8 +18,9 @@ Co máš v `chinese-trainer/`:
    - 🧩 **Spojovačka 4×4:** vlevo čínsky, vpravo česky — přesně Duolingo styl, co jsi chtěl.
    - 🔊 **Poslech:** přehraje slovo, vybíráš ze 4 českých významů. Nemusíš mluvit.
    - 🧱 **Věty:** dostaneš česky „Piju kávu." a klikáním skládáš 我 / 喝 / 咖啡.
-   - 📥 **Anki:** stažení CSV + seznam všech slov (klik = přehrát).
-3. Zvuk: používá `speechSynthesis` s `zh-CN`, rychlost 0.8. Na iPhonu/Androidu funguje po prvním kliknutí. Nic neinstaluješ, žádný klíč.
+   - 🎤 **Výslovnost (beta):** řekneš slovo do mikrofonu, telefon ho ohodnotí — vše on-device, viz sekce 8.
+   - 📥 **Anki:** stažení .apkg se zvukem / CSV + seznam všech slov (klik = přehrát).
+3. Zvuk: primárně nahrané MP3 (neuronový hlas Xiaoxiao, tempo −10 % pro studenty). Když soubor chybí, záloha = `speechSynthesis` s `zh-CN`. Na iPhonu/Androidu funguje po prvním kliknutí. Nic neinstaluješ, žádný klíč.
 
 Tvoje startovní slova už tam jsou: 我 wǒ (já), 我们 wǒmen (my), 你 nǐ (ty), 咖啡 kāfēi (káva), 妈妈 māma (máma), 爸爸 bàba (táta).
 
@@ -23,6 +29,8 @@ Anki: https://apps.ankiweb.net/
 - **Android:** AnkiDroid — zdarma v Google Play
 - **iPhone:** AnkiMobile — placená (~$25). Zdarma alternativa: AnkiWeb v prohlížeči.
 - **PC/Mac:** Anki zdarma.
+
+Nejrychlejší: **`hanyu_hsk1_audio.apkg`** — stáhni, otevři v Anki (PC: dvojklik, Android: otevři soubor → AnkiDroid). Všech 171 karet má zvuk v sobě, nic nenastavuješ.
 
 ### Import CSV do mobilu (2 min)
 1. CSV si pošli do mobilu (e-mail / Drive) nebo ho stáhni přímo v mobilu ze záložky 📥 Anki.
@@ -64,3 +72,18 @@ Místo instalace těžkých klonů (většina potřebuje Next.js + databázi + l
 - `mr-fox93/next-lang-ai-app`, `jacklim-gif/StudyFriendly` — mastery 0–5, XP v localStorage bez registrace, level každých 100 XP. Půjčeno: náš level vzorec.
 - `HelioFernandes404/openflashcards`, `Liozon/OpenFlashcards` — FSRS + TTS, skládání frází, psaní znaků. Nápad na příště: psací režim pro tóny/pinyin.
 - HSK postup (ověřeno): HSK 2.0 je HSK 1 = 150 slov, HSK 2 = +150 (dohromady 300), zkouška jen poslech + čtení, pass 120/200. Cca 6–8 týdnů po HSK 1.
+
+## 7) Zvuk: odkud je a jak ho přegenerovat
+- Hlas: **Microsoft Edge neuronové TTS, zh-CN-XiaoxiaoNeural** (zdarma, bez klíče, generováno přes open-source `edge-tts`). Osobní studijní použití.
+- Lidské nahrávky zdarma existují (Shtooka — rodilá mluvčí z Pekingu, CC licence, ~1000 slov z HSK 1; lidské věty má Tatoeba, CC, 5 800+ mandarínských vět), ale pokrytí našich slov/vět není kompletní a kvalita kolísá — proto jeden konzistentní neuronový hlas + odkaz na Forvo na dopilování.
+- Přegenerování: `pip install edge-tts`, pak `python3 scripts/gen_audio.py all` (přeskakuje hotové). Hlas/tempo se mění nahoře ve skriptu.
+- .apkg: `pip install genanki`, pak `python3 scripts/build_apkg.py`.
+
+## 8) Výslovnost: co jde on-device a co ne (výzkum)
+Požadavek: telefon poslouchá a hodnotí, **data nikam neodejdou**. Verdikt po průzkumu:
+- ✅ **JDE: Transformers.js + Whisper tiny v prohlížeči** — `pipeline('automatic-speech-recognition', 'Xenova/whisper-tiny')`, `{language:'chinese'}`. WASM, mikrofon → přepis → skóre, vše lokálně. Výzkum (Kobe Univ. 2026, 31 studentů): hodnocení Whisperu je z ASR systémů **nejblíž učitelům**; menší model je paradoxně citlivější na chyby (Ballier et al. 2024) — pro skórování výhoda. Naše skóre = podíl správně rozpoznaných znaků (LCS), homofona = správně (stejná metoda jako studie).
+- ❌ NEJDE ve statické appce: **Montreal Forced Aligner / Kaldi (vč. GOP)** — serverové C++/Python, bez backendu nespustíš. **Web Speech API rozpoznávání** — posílá zvuk Googlu/Applu (porušilo by soukromí). **Azure/Gladia** — cloud + klíče. **„Open Pronounce"** — pod tímhle jménem žádný standardní open-source nástroj neexistuje; nejbližší reálné věci jsou právě MFA/Kaldi-GOP (server).
+- Limity bety: tiny je méně přesný než velké modely (úmysl — přísnější učitel), jednotlivé slabiky těžší než věty, 92 % chyb studentů jsou tóny (Whisper je slyší jako jiné znaky — dobře). Tichá místnost + blízko k mikrofonu = nejlepší výsledky. První stažení modelu ~75 MB (pak cache, pak i offline).
+
+## 9) QA: vzhled ověřen v prohlížeči
+`python3 scripts/qa_shots.py` — všech 6 záložek na desktopu (1280) i mobilu (390), 0 JS chyb. Nalezen a opraven 1 problém: fixní patička mohla na úzkém mobilu překrývat tlačítka (padding dna 90 → 130 px).

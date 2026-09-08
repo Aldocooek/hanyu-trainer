@@ -15,7 +15,7 @@ header p{margin:4px 0 0;opacity:.9;font-size:13px}
 nav{display:flex;gap:8px;padding:12px;overflow-x:auto;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0}
 nav button{flex:1;min-width:110px;border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 8px;font-size:14px;cursor:pointer;white-space:nowrap}
 nav button.active{background:var(--ink);color:#fff;border-color:var(--ink)}
-main{max-width:720px;margin:0 auto;padding:16px 14px 90px}
+main{max-width:720px;margin:0 auto;padding:16px 14px 130px}
 section{display:none}
 section.active{display:block}
 .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:28px 20px;text-align:center;box-shadow:0 4px 18px rgba(0,0,0,.05)}
@@ -79,6 +79,7 @@ footer{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px sol
 <button data-tab="match">🧩 Spojovačka</button>
 <button data-tab="listen">🔊 Poslech</button>
 <button data-tab="sent">🧱 Věty</button>
+<button data-tab="speak">🎤 Výslovnost</button>
 <button data-tab="anki">📥 Anki</button>
 </nav>
 <main>
@@ -155,6 +156,23 @@ Přečti si českou větu, poslechni si čínštinu a klikáním poskládej díl
 <button class="big ghost" id="s-next">Nová věta →</button>
 </div>
 <div class="feedback" id="s-fb"></div>
+</div>
+</section>
+
+<!-- VYSLOVNOST -->
+<section id="tab-speak">
+<div class="box"><h3>🎤 Výslovnost (beta) — hodnotí telefon, nic se nikam neposílá</h3>
+<p>Řekni slovo / větu do mikrofonu. Model <b>Whisper tiny</b> běží <b>přímo v prohlížeči</b> — výzkumy ukazují, že hodnocení Whisperu je z ASR systémů nejblíž učitelům (homofona se počítají jako správně). První použití stáhne ~75 MB model (jednou, pak z cache). Potřebuješ mikrofon a napoprvé internet.</p>
+<div class="row"><select id="p-level"><option value="L1">Úroveň 1 — 60 slov</option><option value="L2">Úroveň 2 — 120 slov</option><option value="L3" selected>Úroveň 3 — HSK 1</option><option disabled>HSK 2 (brzy)</option></select><select id="p-type"><option value="word">Slova</option><option value="sent">Věty</option></select></div></div>
+<div class="card">
+<div class="hanzi" id="p-hz" style="font-size:44px">我</div>
+<div class="pinyin" id="p-py">wǒ</div>
+<div class="czech" id="p-cz">já</div>
+<div class="row"><button class="big audio" id="p-play">🔊 Vzor</button><button class="big ghost" id="p-new">🎲 Nové</button></div>
+<div class="row"><button class="big primary" id="p-rec">● Nahrát (max 6 s)</button></div>
+<div class="hint" id="p-status">Model se stáhne až při prvním nahrávání.</div>
+<div class="feedback" id="p-fb"></div>
+<div class="czech" id="p-heard" style="font-size:16px;color:#555"></div>
 </div>
 </section>
 
@@ -278,8 +296,46 @@ document.getElementById('dl-apkg').onclick=()=>{window.location.href='hanyu_hsk1
 document.getElementById('dl-csv').onclick=()=>{const blob=new Blob(["\uFEFF"+csvText()],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='hanyu_hsk1_cz.csv';a.click();};
 function drawAll(f=''){const box=document.getElementById('all');box.innerHTML='';WORDS.filter(w=>!f||w.hz.includes(f)||w.py.toLowerCase().includes(f.toLowerCase())||w.cz.toLowerCase().includes(f.toLowerCase())).slice(0,300).forEach(w=>{const d=document.createElement('div');d.innerHTML=`<span><b>${w.hz}</b> <span style="color:#c0392b">${w.py}</span></span><span>${w.cz}</span>`;d.style.cursor='pointer';d.onclick=()=>speak(w.hz,wfile(w.id));box.appendChild(d);});}
 document.getElementById('q').oninput=e=>drawAll(e.target.value.trim());
+// ---------- výslovnost (on-device Whisper tiny, beta) ----------
+let pTarget={kind:'word',w:null,s:null,sidx:0},pPipe=null,pRec=null,pChunks=[],pTimer=null;
+function pPool(){return lvlPool(WORDS,document.getElementById('p-level').value);}
+function newPron(){const t=document.getElementById('p-type').value;document.getElementById('p-fb').textContent='';document.getElementById('p-fb').className='feedback';document.getElementById('p-heard').textContent='';
+if(t==='word'){const w=wpick(pPool(),1)[0];pTarget={kind:'word',w,s:null,sidx:0};document.getElementById('p-hz').textContent=w.hz;document.getElementById('p-py').textContent=w.py;document.getElementById('p-cz').textContent=w.cz;}
+else{const i=Math.floor(Math.random()*SENTENCES.length),s=SENTENCES[i];pTarget={kind:'sent',w:null,s,sidx:i};document.getElementById('p-hz').textContent=s.full;document.getElementById('p-py').textContent=s.py;document.getElementById('p-cz').textContent=s.cz;}}
+function pExpected(){return pTarget.kind==='word'?(pTarget.w?pTarget.w.hz:''):pTarget.s.full;}
+function pStatus(t){document.getElementById('p-status').textContent=t;}
+async function pEnsure(){if(pPipe)return pPipe;pStatus('Stahuju AI model (~75 MB, jen poprvé)…');const {pipeline}=await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1');pPipe=await pipeline('automatic-speech-recognition','Xenova/whisper-tiny',{progress_callback:(p)=>{if(p&&p.status==='progress'&&p.total)pStatus(`Stahuju model ${Math.round(p.loaded/p.total*100)} %…`);}});pStatus('Model připraven. Příště už i offline (je v cache).');return pPipe;}
+function pScore(exp,got){const clean=s=>s.replace(/[。？！，、?!.,\s]/g,'');const E=[...clean(exp)],G=[...clean(got)];let gi=0,ok=0;const marks=E.map(ch=>{const k=G.indexOf(ch,gi);if(k>=0){gi=k+1;ok++;return 1;}return 0;});return{E,marks,score:E.length?ok/E.length:0};}
+async function pToAudio(blob){const Ctx=window.AudioContext||window.webkitAudioContext;const ctx=new Ctx();try{const buf=await blob.arrayBuffer();const dec=await ctx.decodeAudioData(buf);const ch=dec.getChannelData(0),sr=dec.sampleRate;const out=new Float32Array(Math.floor(ch.length*16000/sr));for(let i=0;i<out.length;i++)out[i]=ch[Math.floor(i*sr/16000)]||0;return out;}finally{try{ctx.close();}catch(e){}}}
+document.getElementById('p-play').onclick=()=>{if(pTarget.kind==='word'&&pTarget.w)speak(pTarget.w.hz,wfile(pTarget.w.id));else if(pTarget.s)speak(pTarget.s.full,'audio/s'+pTarget.sidx+'.mp3');};
+document.getElementById('p-new').onclick=newPron;
+document.getElementById('p-level').onchange=newPron;document.getElementById('p-type').onchange=newPron;
+document.getElementById('p-rec').onclick=async(e)=>{
+const btn=e.currentTarget;
+if(pRec){try{pRec.stop();}catch(err){}return;}
+try{
+if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){pStatus('Prohlížeč neumí mikrofon. Zkus Chrome / Safari (ideálně přes https).');return;}
+pStatus('Nahrávám… řekni zadané (stop do 6 s).');
+const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+pChunks=[];pRec=new MediaRecorder(stream);
+pRec.ondataavailable=ev=>{if(ev.data&&ev.data.size)pChunks.push(ev.data);};
+pRec.onstop=async()=>{const mt=(pRec&&pRec.mimeType)||'audio/webm';try{stream.getTracks().forEach(t=>t.stop());}catch(err){}clearTimeout(pTimer);pRec=null;btn.textContent='● Nahrát (max 6 s)';const blob=new Blob(pChunks,{type:mt});
+try{pStatus('Přepisuju v telefonu (nic se neodesílá)…');const pipe=await pEnsure();const audio=await pToAudio(blob);const res=await pipe(audio,{language:'chinese',task:'transcribe'});const heard=((res&&res.text)||'').trim();
+const r=pScore(pExpected(),heard);const pct=Math.round(r.score*100);
+document.getElementById('p-heard').textContent='Slyším: '+(heard||'…');
+const fb=document.getElementById('p-fb');const viz=r.E.map((ch,i)=>r.marks[i]?ch:ch+'✗').join(' ');
+if(r.score>=0.99){fb.textContent=`🎉 ${pct} % — perfektní! ${viz}`;fb.className='feedback ok';addXP(15);}
+else if(r.score>=0.6){fb.textContent=`👍 ${pct} % — skoro tam! ${viz}`;fb.className='feedback ok';addXP(10);}
+else{fb.textContent=`💪 ${pct} % — zkus znovu, v klidu a blíž k mikrofonu. ${viz}`;fb.className='feedback no';addXP(5);}
+if(pTarget.kind==='word'&&pTarget.w){if(r.score>=0.6)recOk(pTarget.w.id);else recErr(pTarget.w.id);}
+pStatus('Hotovo. Dej 🎲 Nové a pokračuj.');}
+catch(err){console.error(err);pStatus('Nepovedlo se (model/transkripce). Při prvním stažení zkontroluj internet a zkus znovu.');}};
+pRec.start();btn.textContent='■ Stop';
+pTimer=setTimeout(()=>{if(pRec)try{pRec.stop();}catch(err){}},6000);
+}catch(err){console.error(err);pStatus('Mikrofon odepřen nebo nedostupný. Povol přístup k mikrofonu a zkus znovu.');pRec=null;btn.textContent='● Nahrát (max 6 s)';}
+};
 // init
-refill();showCard();updStats();mDrawScore();newMatch();newListen();newSent();drawAll();
+refill();showCard();updStats();mDrawScore();newMatch();newListen();newSent();newPron();drawAll();
 </script>
 </body>
 </html>

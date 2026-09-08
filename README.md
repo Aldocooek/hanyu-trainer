@@ -9,13 +9,14 @@ Interaktivní trenér čínštiny: 171 slov HSK 1 (zjednodušené znaky + pinyin
 - 🧩 Spojovačka 4×4 (Duolingo styl)
 - 🔊 Poslech — čínština → čeština i obráceně, bez mluvení
 - 🧱 Skládačka vět
-- 📥 Anki export (`hanyu_hsk1_cz.csv`) + návod na import
+- 🎤 Výslovnost (beta) — on-device Whisper tiny, nic se nikam neposílá
+- 📥 Anki export (`.apkg` se zvukem + CSV) + návod na import
 
 ## Chytrý trénink
 - ⚡ XP + levely + 🔥 streak (localStorage, žádný login)
 - Vážené losování: slova, kde chybuješ, se ukazují častěji
 - Úrovně L1 → L3 (60 → 120 → všech 171 slov), HSK 2 v přípravě
-- Zvuk zdarma přes hlas zařízení (Web Speech API, `zh-CN`)
+- Zvuk zdarma: nahrané MP3 (neuronový hlas Xiaoxiao, 201 souborů, `scripts/gen_audio.py`), záloha = hlas zařízení (Web Speech API, `zh-CN`)
 
 ## Spuštění lokálně
 Stačí otevřít `index.html` v prohlížeči. Nebo:
