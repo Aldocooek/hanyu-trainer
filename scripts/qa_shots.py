@@ -12,7 +12,7 @@ from playwright.sync_api import sync_playwright
 
 PORT = 8129
 NAV_TABS = ["home", "cards", "mix", "fix"]
-MENU_TABS = ["match", "listen", "sent", "speak", "anki", "set"]
+MENU_TABS = ["tones", "match", "listen", "sent", "speak", "anki", "set"]
 VIEWPORTS = {
     "desktop": {"width": 1280, "height": 800},
     "mobile": {"width": 390, "height": 844},

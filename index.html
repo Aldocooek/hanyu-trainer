@@ -171,6 +171,10 @@ html[data-motion="calm"] *,html[data-motion="calm"] *::before,html[data-motion="
 @media(max-width:480px){.hanzi{font-size:52px}.quick{grid-template-columns:1fr 1fr}}
 .pymain{font-size:32px;line-height:1.35;font-weight:800}
 .tokpy{font-size:17px}
+#t-word b{color:var(--blue)}
+.toneopt{display:flex;align-items:center;justify-content:space-between}
+.toneopt .tg{font-size:26px;color:var(--muted)}
+.toneopt.ok .tg{color:var(--green)}
 /* desktop: široký layout, ne úzký sloupec */
 @media(min-width:960px){
 main{max-width:1040px}
@@ -209,6 +213,7 @@ nav#tabbar button{flex:0 1 170px}
 <button id="moreBtn">⋯<span>Více</span></button>
 </nav>
 <div id="moreMenu"><div class="sheet">
+<button data-tab="tones">🎵 Tóny</button>
 <button data-tab="match">🧩 Spojovačka</button>
 <button data-tab="listen">🔊 Poslech</button>
 <button data-tab="sent">🧱 Věty</button>
@@ -224,7 +229,7 @@ nav#tabbar button{flex:0 1 170px}
 <div class="card">
 <div class="goal-wrap">
 <svg class="ring" viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" class="ring-bg"/><circle id="goalArc" cx="60" cy="60" r="52" class="ring-fg"/></svg>
-<div class="goal-txt"><b id="goalPct">0 %</b><span>denní cíl 50 XP</span></div>
+<div class="goal-txt"><b id="goalPct">0 %</b><span>denní cíl 80 XP</span></div>
 <div class="streak-big">🔥<b id="streakN">0</b><span>dní v řadě</span></div>
 </div>
 <div class="hint" id="goalHint"></div>
@@ -233,7 +238,7 @@ nav#tabbar button{flex:0 1 170px}
 <button class="qbtn blue" data-go="mix">⚡<b>Rychlý mix</b><span>5 minut všeho</span></button>
 <button class="qbtn green" data-go="fix">🩹<b>Opravna</b><span id="fixCount">0 slabých slov</span></button>
 <button class="qbtn yellow" data-go="cards">🃏<b>Kartičky</b><span>klasika</span></button>
-<button class="qbtn purple" data-go="speak">🎤<b>Výslovnost</b><span>beta</span></button>
+<button class="qbtn purple" data-go="tones">🎵<b>Tóny</b><span>páry 1–4</span></button>
 </div>
 </section>
 
@@ -382,6 +387,27 @@ Přečti si českou větu, poslechni si čínštinu a klikáním poskládej díl
 </div>
 </section>
 
+<!-- TÓNY -->
+<section id="tab-tones">
+<div class="box"><h3>🎵 Tóny — párový drill</h3>
+<p>Nejtěžší pár je 2–3, nejlehčí 1–3. Jedu lehké → těžké, ve dvojslabičných slovech, <b>mužským hlasem</b>. Poslouchej a tipni tón zvýrazněné slabiky. Pinyin neukazuju schválně — jen uši.</p>
+<div class="row"><button class="big primary" id="t-start" style="width:100%">Start — 12 kol</button></div></div>
+<div class="card" id="t-play" style="display:none">
+<div class="progress"><i id="t-bar"></i></div>
+<div class="hint" id="t-pos"></div>
+<div class="hanzi" id="t-word" style="font-size:40px">?</div>
+<div class="row"><button class="big audio" id="t-replay">🔊 Znovu</button></div>
+<div class="opts" id="t-opts" style="grid-template-columns:1fr 1fr"></div>
+<div class="feedback" id="t-fb"></div>
+</div>
+<div class="card" id="t-done" style="display:none">
+<div class="hanzi" style="font-size:52px">🎵</div>
+<div class="czech" id="t-sum"></div>
+<div class="hint" id="t-sum2"></div>
+<div class="row"><button class="big good" id="t-again">🔁 Znovu</button><button class="big ghost" id="t-home">Domů</button></div>
+</div>
+</section>
+
 <!-- ANKI -->
 <section id="tab-anki">
 <div class="box">
@@ -430,8 +456,8 @@ if('speechSynthesis' in window){pickVoice();speechSynthesis.onvoiceschanged=pick
 function tts(t){if(!('speechSynthesis' in window)){alert('Prohlížeč neumí hlas. Zkus Chrome / Safari.');return;}speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='zh-CN';u.rate=0.8;if(zhVoice)u.voice=zhVoice;speechSynthesis.speak(u);}
 // Přehrávání: nejdřív nahraný neuronový hlas (audio/*.mp3), když chybí → hlas zařízení.
 let AU=null;
-function speak(t,f){try{if(AU)AU.pause();}catch(e){} if('speechSynthesis' in window)try{speechSynthesis.cancel();}catch(e){}
-if(f){let fell=false;try{AU=new Audio(f);try{if(localStorage.getItem('hanyu_slow')==='1')AU.playbackRate=0.7;}catch(se){}AU.onerror=()=>{if(!fell){fell=true;tts(t);}};const p=AU.play();if(p&&p.catch)p.catch(()=>{if(!fell){fell=true;tts(t);}});return;}catch(e){}}tts(t);}
+function speak(t,f,f2){try{if(AU)AU.pause();}catch(e){} if('speechSynthesis' in window)try{speechSynthesis.cancel();}catch(e){}
+if(f){let fell=false;const fb=()=>{if(!fell){fell=true;if(f2)speak(t,f2);else tts(t);}};try{AU=new Audio(f);try{if(localStorage.getItem('hanyu_slow')==='1')AU.playbackRate=0.7;}catch(se){}AU.onerror=fb;const p=AU.play();if(p&&p.catch)p.catch(fb);return;}catch(e){}}tts(t);}
 function wfile(id){return 'audio/w'+id+'.mp3';}
 function wfileHz(hz){const w=WORDS.find(x=>x.hz===hz);return w?wfile(w.id):null;}
 // ---------- stav ----------
@@ -581,7 +607,7 @@ function pyOf(hz){const w=WORDS.find(x=>x.hz===hz);return w?w.py:hz;}
 function wLeft(w){return SCR()==='hanzi'?`${w.hz}<small>${w.py}</small>`:`<span class="pymain">${tone(w.py)}</span>`;}
 function wMain(w){return SCR()==='hanzi'?`<b>${w.hz}</b>`:`<b class="pymain">${tone(w.py)}</b>`;}
 function tokShow(t){if(SCR()==='hanzi')return t;return `<span class="tokpy">${tone(pyOf(t))}</span>`;}
-const DGOAL=50;
+const DGOAL=80;
 function dailyGet(){try{const d=JSON.parse(localStorage.getItem('hanyu_daily')||'{}');return(d.date===todayStr())?(d.xp||0):0;}catch(e){return 0;}}
 function dailyAdd(n){try{localStorage.setItem('hanyu_daily',JSON.stringify({date:todayStr(),xp:dailyGet()+n}));}catch(e){}updHome();updateBadge();}
 const _addXP=addXP;addXP=function(n){const b=lvl();_addXP(n);dailyAdd(n);try{if(lvl()>b){toast('🎉 Level '+lvl()+'!');burst();buzz([30,50,30,50,100]);}}catch(e){}};
@@ -654,6 +680,42 @@ document.getElementById('d-again').onclick=()=>startDrill('d');
 document.getElementById('o-again').onclick=()=>startDrill('o');
 document.getElementById('d-home').onclick=()=>goTab('home');
 document.getElementById('o-home').onclick=()=>goTab('home');
+// ---------- tóny: párový drill (lehké páry → T2-T3, dvojslabičná slova, mužský hlas) ----------
+const TPAIRS=[[1,3],[3,4],[1,4],[1,2],[2,4],[2,3]];
+const TGLYPH={1:'¯',2:'´',3:'ˇ',4:'`'};
+function sylTone(s){if(/[āēīōūǖĀĒĪŌŪǕ]/.test(s))return 1;if(/[áéíóúǘÁÉÍÓÚǗ]/.test(s))return 2;if(/[ǎěǐǒǔǚǍĚǏǑǓǙ]/.test(s))return 3;if(/[àèìòùǜÀÈÌÒÙǛ]/.test(s))return 4;return 0;}
+function tonePat(w){const m=[];for(const ch of w.py){const t=sylTone(ch);if(t)m.push(t);}return m;}
+function tonePool(){return scopeWords().filter(w=>w.hz.length===2&&tonePat(w).length===2);}
+let TN=null;
+function startTones(){const pool=tonePool();if(pool.length<8){toast('Málo slov pro tóny');return;}TN={queue:[],i:0,ok:0};
+for(let i=0;i<12;i++){const pair=TPAIRS[Math.floor(i/2)%6];
+const cands=pool.filter(w=>{const p=tonePat(w);return p.includes(pair[0])||p.includes(pair[1]);});
+const w=(cands.length?cands:pool)[Math.floor(Math.random()*(cands.length?cands.length:pool.length))];
+const p=tonePat(w);const ks=[0,1].filter(k=>p[k]===pair[0]||p[k]===pair[1]);
+TN.queue.push({w,k:ks.length?ks[Math.floor(Math.random()*ks.length)]:Math.floor(Math.random()*2),pair});}
+document.getElementById('t-done').style.display='none';document.getElementById('t-play').style.display='block';renderTone();}
+function renderTone(){if(TN.i>=TN.queue.length){finishTones();return;}
+const r=TN.queue[TN.i],w=r.w,p=tonePat(w);document.getElementById('t-bar').style.width=(TN.i/TN.queue.length*100)+'%';
+document.getElementById('t-pos').textContent=`Kolo ${TN.i+1} / ${TN.queue.length} • pár ${r.pair[0]}–${r.pair[1]}`;
+const fb=document.getElementById('t-fb');fb.textContent='';fb.className='feedback';
+document.getElementById('t-word').innerHTML=`Slabika <b>${r.k+1}</b> / 2`;
+const box=document.getElementById('t-opts');box.innerHTML='';
+[1,2,3,4].forEach(t=>{const b=document.createElement('button');b.className='opt toneopt';b.innerHTML=`<b>${t}. tón</b> <span class="tg">${TGLYPH[t]}</span>`;b.onclick=()=>gradeTone(t===p[r.k],r,t);box.appendChild(b);});
+speak(w.hz,'audio/m_'+w.id+'.mp3',wfile(w.id));}
+function gradeTone(ok,r){const fb=document.getElementById('t-fb');const p=tonePat(r.w);
+[...document.getElementById('t-opts').children].forEach((b,i)=>{b.style.pointerEvents='none';if(i+1===p[r.k])b.classList.add('ok');});
+if(ok){TN.ok++;fb.textContent='✓ Správně!';fb.className='feedback ok';recOk(r.w.id);addXP(10);buzz(20);}
+else{fb.textContent=`✕ Správně: ${p[r.k]}. tón (${r.w.py}). 🔊 si ho poslechni znovu.`;fb.className='feedback no';recErr(r.w.id);buzz([40,40,60]);}
+setTimeout(()=>{TN.i++;renderTone();},ok?800:2400);}
+function finishTones(){document.getElementById('t-play').style.display='none';const d=document.getElementById('t-done');d.style.display='block';
+const acc=TN.queue.length?Math.round(TN.ok/TN.queue.length*100):0;
+document.getElementById('t-sum').textContent=`${TN.ok} / ${TN.queue.length} správně`;
+document.getElementById('t-sum2').textContent=acc>=80?'Uši jak rodilý! 🔥':acc>=50?'Slyšíš pokrok 💪':'Pár 2–3 potrápí každého 🌱';
+if(acc>=60){burst();buzz([30,50,30,50,100]);}updHome();}
+document.getElementById('t-start').onclick=startTones;
+document.getElementById('t-again').onclick=startTones;
+document.getElementById('t-home').onclick=()=>goTab('home');
+document.getElementById('t-replay').onclick=()=>{if(TN&&TN.i<TN.queue.length){const r=TN.queue[TN.i];speak(r.w.hz,'audio/m_'+r.w.id+'.mp3',wfile(r.w.id));}};
 // klávesové zkratky (desktop)
 document.addEventListener('keydown',e=>{const tag=(e.target&&e.target.tagName)||'';if(/INPUT|SELECT|TEXTAREA/.test(tag))return;
 if(document.getElementById('tab-cards').classList.contains('active')){if(e.key==='ArrowRight')document.getElementById('c-next').click();else if(e.key===' '||e.key==='Enter'){e.preventDefault();if(!revealed)reveal();}else if(e.key==='1')document.getElementById('c-yes').click();else if(e.key==='2')document.getElementById('c-no').click();return;}

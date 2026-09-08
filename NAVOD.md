@@ -90,7 +90,7 @@ Požadavek: telefon poslouchá a hodnotí, **data nikam neodejdou**. Verdikt po 
 
 ## 10) v3: hravý design + PWA + denní režim
 - **Design:** Duolingo styl — chunky 3D tlačítka, spodní tab bar (Domů / Karty / Mix / Opravna / Více), **tónové barvy pinyinu** (1🔴 2🟠 3🟢 4🔵), světlá + tmavá + systém, Baloo 2 font. Desktop ≥960px: široký layout (1040px, 4 sloupce).
-- **Domů:** kroužek denního cíle (50 XP), streak, rychlé akce, banner když hoří streak.
+- **Domů:** kroužek denního cíle (80 XP), streak, rychlé akce, banner když hoří streak.
 - **⚡ Mix:** 12 kol (poslech/karty/věty/spojovačka), souhrn + confetti. **🩹 Opravna:** totéž, jen slabá slova.
 - **Nastavení:** vzhled, animace (auto/plné/klidné — auto pozná slabé zařízení), pomalý zvuk 0.7×, vibrace (Android), připomínka streaku, smazat postup. Desktop: klávesy (→, mezerník, 1/2, 1–4 v poslechu).
 - **PWA:** `manifest.json` + `sw.js` (app shell offline, audio se docachuje po prvním přehrání) + ikony (`scripts/make_icons.py`). Instalace: v mobilu Otevřít → Sdílet → „Přidat na plochu". Odznak s dluhem XP na ikonce (Android/Chrome), notifikace při otevření když hoří streak. Upřímná limita: web neumí budík bez serveru; iPhone nevibruje.
@@ -100,3 +100,8 @@ Požadavek: telefon poslouchá a hodnotí, **data nikam neodejdou**. Verdikt po 
 - **Přepínač:** ⚙️ Nastavení → Moje úroveň HSK (default HSK 1, ty si měníš sám). Pooly kumulativní, L1–L3 = třetiny poolu, věty filtrovány úrovní, statistiky/patka/seznam/CSV podle úrovně. HSK 3–6: sloty zamčené, soubory words_hsk3.js… připravené.
 - **Zobrazení (pinyin-first):** ⚙️ → 🔤 Zobrazení: Pouze pinyin (default — žádné znaky, velký barevný pinyin) / Pinyin + znaky / Pouze znaky. Zvuk pořád jede ze znaků (TTS by pinyin zkazilo). Větné dílky ukazují pinyin dílků.
 - **Anki:** `.apkg` zvlášť pro HSK 1 a HSK 2 (se zvukem), CSV podle aktuální úrovně.
+
+## 12) v5: tónový drill (mužský hlas) + cíl 80 XP
+- **Proč:** výzkum (Wang et al. 1999; Li 2016; Chandrasekaran et al. 2013): tóny se učí párově od lehkých (1–3) po nejtěžší (2–3), ve **dvojslabičných** slovech (ne izolované slabiky), s okamžitým minimálním feedbackem, s variabilitou mluvčích.
+- **Jak:** 🎵 Tóny — 12 kol, pár 1–3 → … → 2–3, slyšíš slovo **mužským hlasem Yunxi** (97 slov, `audio/m_<id>.mp3`, `scripts/gen_tones.py`), tipuješ tón 1./2. slabiky (pinyin schválně nevidíš). Fallback: Xiaoxiao → hlas zařízení.
+- **Denní cíl 80 XP.** Znaky: na přání zůstává pinyin-first napořád, žádný znakový kurz se nechystá.
