@@ -168,15 +168,12 @@ Přečti si českou větu, poslechni si čínštinu a klikáním poskládej díl
 <li><b>iPhone:</b> <b>AnkiMobile</b> — placená (~$25), alternativa zdarma: <b>AnkiWeb</b> v prohlížeči na <a href="https://apps.ankiweb.net/" target="_blank">apps.ankiweb.net</a></li>
 <li><b>Počítač:</b> Anki zdarma z <a href="https://apps.ankiweb.net/" target="_blank">apps.ankiweb.net</a></li>
 </ul>
-<p><button class="big primary" id="dl-csv" style="width:100%">⬇ Stáhnout hanyu_hsk1_cz.csv (171 slov)</button></p>
-<h3>Jak CSV dostat do mobilu (2 minuty)</h3>
+<p><button class="big primary" id="dl-apkg" style="width:100%">⬇ Stáhnout hotový balíček .apkg SE ZVUKEM (doporučeno)</button></p>
+<p><button class="big ghost" id="dl-csv" style="width:100%">⬇ Jen CSV bez zvuku (hanyu_hsk1_cz.csv)</button></p>
+<h3>Jak balíček dostat do mobilu (1 min — se zvukem)</h3>
 <ol>
-<li>V mobilu otevři tuhle stránku a stáhni CSV (nebo si ho pošli e-mailem / přes Drive).</li>
-<li>Otevři <b>AnkiDroid → ⋮ → Importovat</b> (na PC: Soubor → Importovat).</li>
-<li>Vyber stažené <code>hanyu_hsk1_cz.csv</code>.</li>
-<li>Nastav: <b>Oddělovač: středník (;)</b>, <b>Kódování: UTF-8</b>, typ poznámky: <b>Basic</b>.</li>
-<li>Namapuj sloupce: 1 → Přední (znaky), 2 → Zadní (pinyin), 3 → Zadní (čeština). Zaškrtni „Povolit HTML“.</li>
-<li>Importuj. Hotovo — uvidíš znak, po otočení pinyin + význam. 🔊 Zvuk v Anki: karta nemá MP3 (pro offline by byl balík ~50 MB), takže výslovnost trénuj tady v trenéru tlačítkem 🔊, v Anki se uč znaky.</li>
+<li><b>.apkg (doporučeno):</b> stáhni tlačítkem výše a soubor otevři v Anki (PC: dvojklik; Android: otevři soubor → AnkiDroid). Všech 171 karet má zvuk rovnou v sobě, nic nenastavuješ.</li>
+<li><b>CSV (bez zvuku):</b> AnkiDroid: <b>⋮ → Importovat</b> → vyber <code>hanyu_hsk1_cz.csv</code> (PC: Soubor → Importovat). Oddělovač <b>středník (;)</b>, kódování <b>UTF-8</b>, typ <b>Basic</b>: sloupec 1 → Přední (znaky), 2+3 → Zadní (pinyin + čeština).</li>
 </ol>
 <p style="color:#777">Tip: v Anki si zapni tahání denního limitu na 20 nových karet — 171 slov dáš cca za 9 dní.</p>
 </div>
@@ -194,14 +191,20 @@ Přečti si českou větu, poslechni si čínštinu a klikáním poskládej díl
 </div>
 </section>
 </main>
-<footer>171 slov HSK 1 • zjednodušené znaky + pinyin + čeština • zvuk = hlas tvého zařízení (zdarma, bez klíče)</footer>
+<footer>171 slov HSK 1 • zjednodušené znaky + pinyin + čeština • 🔊 neuronový hlas Xiaoxiao (offline MP3 v balíku, záloha = hlas zařízení)</footer>
 <script src="words.js"></script>
 <script>
 // ---------- TTS (zdarma, hlas zařízení) ----------
 let zhVoice=null;
 function pickVoice(){try{const vs=speechSynthesis.getVoices();zhVoice=vs.find(v=>v.lang&&v.lang.toLowerCase().startsWith('zh'))||vs.find(v=>/chinese|mandarin|xiaoxiao|yunxi|ting|mei/i.test(v.name))||null;}catch(e){}}
 if('speechSynthesis' in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice;}
-function speak(t){if(!('speechSynthesis' in window)){alert('Prohlížeč neumí hlas. Zkus Chrome / Safari.');return;}speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='zh-CN';u.rate=0.8;if(zhVoice)u.voice=zhVoice;speechSynthesis.speak(u);}
+function tts(t){if(!('speechSynthesis' in window)){alert('Prohlížeč neumí hlas. Zkus Chrome / Safari.');return;}speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='zh-CN';u.rate=0.8;if(zhVoice)u.voice=zhVoice;speechSynthesis.speak(u);}
+// Přehrávání: nejdřív nahraný neuronový hlas (audio/*.mp3), když chybí → hlas zařízení.
+let AU=null;
+function speak(t,f){try{if(AU)AU.pause();}catch(e){} if('speechSynthesis' in window)try{speechSynthesis.cancel();}catch(e){}
+if(f){let fell=false;try{AU=new Audio(f);AU.onerror=()=>{if(!fell){fell=true;tts(t);}};const p=AU.play();if(p&&p.catch)p.catch(()=>{if(!fell){fell=true;tts(t);}});return;}catch(e){}}tts(t);}
+function wfile(id){return 'audio/w'+id+'.mp3';}
+function wfileHz(hz){const w=WORDS.find(x=>x.hz===hz);return w?wfile(w.id):null;}
 // ---------- stav ----------
 let known=new Set(JSON.parse(localStorage.getItem('hanyu_known')||'[]'));
 let XP=parseInt(localStorage.getItem('hanyu_xp')||'0');
@@ -234,10 +237,10 @@ fillCats(filt);
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function refill(){const onlyNew=document.getElementById('c-onlynew').checked;const weak=document.getElementById('c-weak').checked;let p=poolFor(filt,document.getElementById('c-level'));if(weak){const w=p.filter(x=>ERR[x.id]);if(w.length)p=w;}deck=p.filter(w=>!onlyNew||!known.has(w.id));if(!deck.length)deck=[...p];deck=wshuffle(deck);ci=0;}
 function showCard(){const w=deck[ci%deck.length];revealed=false;document.getElementById('c-hz').textContent=w.hz;document.getElementById('c-cat').textContent='#'+w.id+' • '+w.cat;document.getElementById('c-py').textContent='?';document.getElementById('c-cz').textContent='?';document.getElementById('c-hint').textContent=known.has(w.id)?'✓ tohle už umíš':'';
-document.getElementById('c-speak').onclick=()=>speak(w.hz);}
+document.getElementById('c-speak').onclick=()=>speak(w.hz,wfile(w.id));}
 function reveal(){const w=deck[ci%deck.length];revealed=true;document.getElementById('c-py').textContent=w.py;document.getElementById('c-cz').textContent=w.cz;}
 document.getElementById('c-show').onclick=reveal;
-document.getElementById('c-speak').onclick=()=>speak(deck[ci%deck.length].hz);
+document.getElementById('c-speak').onclick=()=>{const w=deck[ci%deck.length];speak(w.hz,wfile(w.id));};
 document.getElementById('c-yes').onclick=()=>{const w=deck[ci%deck.length];known.add(w.id);recOk(w.id);addXP(10);save();ci++;if(ci>=deck.length)refill();showCard();};
 document.getElementById('c-no').onclick=()=>{ci++;if(ci>=deck.length)refill();showCard();};
 document.getElementById('c-next').onclick=()=>{ci++;if(ci>=deck.length)refill();showCard();};
@@ -247,7 +250,7 @@ let mSel=null,mPairs=[],mDone=0,mScore=parseInt(localStorage.getItem('hanyu_matc
 function mDrawScore(){document.getElementById('m-score').innerHTML=`<b>Skóre: ${mScore}</b>`;}
 fillCats(document.getElementById('m-filter'));
 function newMatch(){mDone=0;mSel=null;document.getElementById('m-fb').textContent='';document.getElementById('m-fb').className='feedback';const mp=poolFor(document.getElementById('m-filter'),document.getElementById('m-level'));mPairs=wpick(mp.length>=4?mp:WORDS,4);const L=document.getElementById('m-left'),R=document.getElementById('m-right');L.innerHTML='';R.innerHTML='';const rights=shuffle([...mPairs]);
-mPairs.forEach(w=>{const b=document.createElement('button');b.className='pick';b.innerHTML=`${w.hz}<small>${w.py}</small>`;b.onclick=()=>{document.querySelectorAll('#m-left .pick').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');mSel=w;speak(w.hz);};b.dataset.id=w.id;L.appendChild(b);});
+mPairs.forEach(w=>{const b=document.createElement('button');b.className='pick';b.innerHTML=`${w.hz}<small>${w.py}</small>`;b.onclick=()=>{document.querySelectorAll('#m-left .pick').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');mSel=w;speak(w.hz,wfile(w.id));};b.dataset.id=w.id;L.appendChild(b);});
 rights.forEach(w=>{const b=document.createElement('button');b.className='pick';b.textContent=w.cz;b.onclick=()=>{if(!mSel)return;if(mSel.id===w.id){b.classList.add('ok');document.querySelector(`#m-left .pick[data-id="${w.id}"]`)?.classList.add('ok');document.querySelector(`#m-left .pick[data-id="${w.id}"]`).style.pointerEvents='none';b.style.pointerEvents='none';mSel=null;mDone++;mScore++;localStorage.setItem('hanyu_match',mScore);mDrawScore();recOk(w.id);addXP(5);if(mDone===4){document.getElementById('m-fb').textContent='🎉 Skvělé! Dávám nové kolo…';document.getElementById('m-fb').className='feedback ok';setTimeout(newMatch,1200);}}else{recErr(mSel.id);b.classList.add('bad');document.getElementById('m-fb').textContent=`Ne — „${mSel.hz} (${mSel.py})" = ${mSel.cz}. Zkus znovu.`;document.getElementById('m-fb').className='feedback no';setTimeout(()=>b.classList.remove('bad'),700);}};b.dataset.id=w.id;R.appendChild(b);});}
 document.getElementById('m-new').onclick=newMatch;
 document.getElementById('m-level').onchange=newMatch;document.getElementById('m-filter').onchange=newMatch;
@@ -255,24 +258,25 @@ document.getElementById('m-level').onchange=newMatch;document.getElementById('m-
 let lCur=null,lRev=false;
 fillCats(document.getElementById('l-filter'));
 function newListen(){document.getElementById('l-fb').textContent='';document.getElementById('l-fb').className='feedback';const lp=poolFor(document.getElementById('l-filter'),document.getElementById('l-level'));lCur=wpick(lp.length?lp:WORDS,1)[0];const opts=shuffle([lCur,...distractors(lCur,lp.length>=4?lp:WORDS,3)]);const box=document.getElementById('l-opts');box.innerHTML='';
-if(!lRev){document.getElementById('l-py').textContent='? (poslouchej a vyber česky)';opts.forEach(w=>{const b=document.createElement('button');b.className='opt';b.textContent=w.cz;b.onclick=()=>{if(w.id===lCur.id){b.classList.add('ok');document.getElementById('l-fb').textContent=`✓ Ano! ${lCur.hz} (${lCur.py}) = ${lCur.cz}`;document.getElementById('l-fb').className='feedback ok';document.getElementById('l-py').textContent=lCur.hz+' • '+lCur.py;known.add(lCur.id);save();recOk(lCur.id);addXP(10);}else{b.classList.add('bad');recErr(lCur.id);document.getElementById('l-fb').textContent='✕ Ne — poslechni znovu a zkus jinou.';document.getElementById('l-fb').className='feedback no';}};box.appendChild(b);});speak(lCur.hz);}
-else{document.getElementById('l-py').textContent=`${lCur.cz} — vyber čínsky`;opts.forEach(w=>{const b=document.createElement('button');b.className='opt';b.innerHTML=`${w.hz} <span style="color:#999">${w.py}</span>`;b.onclick=()=>{if(w.id===lCur.id){b.classList.add('ok');document.getElementById('l-fb').textContent=`✓ Ano! ${lCur.hz} (${lCur.py}) = ${lCur.cz}`;document.getElementById('l-fb').className='feedback ok';known.add(lCur.id);save();recOk(lCur.id);addXP(10);speak(lCur.hz);}else{b.classList.add('bad');recErr(lCur.id);document.getElementById('l-fb').textContent=`✕ Ne — správně je ${lCur.hz} (${lCur.py}).`;document.getElementById('l-fb').className='feedback no';}};box.appendChild(b);});}}
-document.getElementById('l-play').onclick=()=>lCur&&speak(lCur.hz);
+if(!lRev){document.getElementById('l-py').textContent='? (poslouchej a vyber česky)';opts.forEach(w=>{const b=document.createElement('button');b.className='opt';b.textContent=w.cz;b.onclick=()=>{if(w.id===lCur.id){b.classList.add('ok');document.getElementById('l-fb').textContent=`✓ Ano! ${lCur.hz} (${lCur.py}) = ${lCur.cz}`;document.getElementById('l-fb').className='feedback ok';document.getElementById('l-py').textContent=lCur.hz+' • '+lCur.py;known.add(lCur.id);save();recOk(lCur.id);addXP(10);}else{b.classList.add('bad');recErr(lCur.id);document.getElementById('l-fb').textContent='✕ Ne — poslechni znovu a zkus jinou.';document.getElementById('l-fb').className='feedback no';}};box.appendChild(b);});speak(lCur.hz,wfile(lCur.id));}
+else{document.getElementById('l-py').textContent=`${lCur.cz} — vyber čínsky`;opts.forEach(w=>{const b=document.createElement('button');b.className='opt';b.innerHTML=`${w.hz} <span style="color:#999">${w.py}</span>`;b.onclick=()=>{if(w.id===lCur.id){b.classList.add('ok');document.getElementById('l-fb').textContent=`✓ Ano! ${lCur.hz} (${lCur.py}) = ${lCur.cz}`;document.getElementById('l-fb').className='feedback ok';known.add(lCur.id);save();recOk(lCur.id);addXP(10);speak(lCur.hz,wfile(lCur.id));}else{b.classList.add('bad');recErr(lCur.id);document.getElementById('l-fb').textContent=`✕ Ne — správně je ${lCur.hz} (${lCur.py}).`;document.getElementById('l-fb').className='feedback no';}};box.appendChild(b);});}}
+document.getElementById('l-play').onclick=()=>lCur&&speak(lCur.hz,wfile(lCur.id));
 document.getElementById('l-dir').onclick=e=>{lRev=!lRev;e.target.textContent=lRev?'Směr: 🇨🇿 čeština → čínština':'Směr: 🔊 čínština → čeština';newListen();};
 document.getElementById('l-next').onclick=newListen;
 document.getElementById('l-level').onchange=newListen;document.getElementById('l-filter').onchange=newListen;
 // ---------- věty ----------
-let sCur=null,sBuilt=[],sShowPy=false;
-function newSent(){sBuilt=[];sShowPy=false;document.getElementById('s-py').textContent='';document.getElementById('s-fb').textContent='';sCur=SENTENCES[Math.floor(Math.random()*SENTENCES.length)];document.getElementById('s-cz').textContent=sCur.cz;const pool=document.getElementById('s-pool');pool.innerHTML='';shuffle([...sCur.tokens]).forEach(t=>{const b=document.createElement('button');b.className='tok';b.textContent=t;b.onclick=()=>{sBuilt.push(t);b.classList.add('used');drawAnswer();speak(t);};pool.appendChild(b);});drawAnswer();}
+let sCur=null,sBuilt=[],sShowPy=false,sIdx=0;
+function newSent(){sBuilt=[];sShowPy=false;document.getElementById('s-py').textContent='';document.getElementById('s-fb').textContent='';sIdx=Math.floor(Math.random()*SENTENCES.length);sCur=SENTENCES[sIdx];document.getElementById('s-cz').textContent=sCur.cz;const pool=document.getElementById('s-pool');pool.innerHTML='';shuffle([...sCur.tokens]).forEach(t=>{const b=document.createElement('button');b.className='tok';b.textContent=t;b.onclick=()=>{sBuilt.push(t);b.classList.add('used');drawAnswer();speak(t,wfileHz(t));};pool.appendChild(b);});drawAnswer();}
 function drawAnswer(){const a=document.getElementById('s-answer');a.innerHTML='';sBuilt.forEach((t,i)=>{const b=document.createElement('button');b.className='tok';b.textContent=t;b.title='odebrat';b.onclick=()=>{sBuilt.splice(i,1);const poolBtn=[...document.getElementById('s-pool').children].find(x=>x.textContent===t&&x.classList.contains('used'));if(poolBtn)poolBtn.classList.remove('used');drawAnswer();};a.appendChild(b);});}
-document.getElementById('s-check').onclick=()=>{const ok=sBuilt.join('')===sCur.tokens.join('');const fb=document.getElementById('s-fb');const wids=sCur.tokens.map(t=>{const w=WORDS.find(x=>x.hz===t);return w?w.id:null;}).filter(Boolean);if(ok){fb.textContent=`🎉 Správně! ${sCur.full} (${sCur.py})`;fb.className='feedback ok';wids.forEach(recOk);addXP(15);speak(sCur.full);}else{wids.forEach(recErr);fb.textContent='Ještě ne — zkus přeházet dílky. Nápověda: '+sCur.tokens.join(' · ');fb.className='feedback no';}};
+document.getElementById('s-check').onclick=()=>{const ok=sBuilt.join('')===sCur.tokens.join('');const fb=document.getElementById('s-fb');const wids=sCur.tokens.map(t=>{const w=WORDS.find(x=>x.hz===t);return w?w.id:null;}).filter(Boolean);if(ok){fb.textContent=`🎉 Správně! ${sCur.full} (${sCur.py})`;fb.className='feedback ok';wids.forEach(recOk);addXP(15);speak(sCur.full,'audio/s'+sIdx+'.mp3');}else{wids.forEach(recErr);fb.textContent='Ještě ne — zkus přeházet dílky. Nápověda: '+sCur.tokens.join(' · ');fb.className='feedback no';}};
 document.getElementById('s-next').onclick=newSent;
-document.getElementById('s-play').onclick=()=>sCur&&speak(sCur.full);
+document.getElementById('s-play').onclick=()=>sCur&&speak(sCur.full,'audio/s'+sIdx+'.mp3');
 document.getElementById('s-hintbtn').onclick=()=>{sShowPy=!sShowPy;document.getElementById('s-py').textContent=sShowPy?sCur.py+' • '+sCur.full:'';};
 // ---------- anki csv + seznam ----------
 function csvText(){let s='hanzi;pinyin;cesky;kategorie\n';WORDS.forEach(w=>{s+=`${w.hz};${w.py};${w.cz};${w.cat}\n`;});return s;}
+document.getElementById('dl-apkg').onclick=()=>{window.location.href='hanyu_hsk1_audio.apkg';};
 document.getElementById('dl-csv').onclick=()=>{const blob=new Blob(["\uFEFF"+csvText()],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='hanyu_hsk1_cz.csv';a.click();};
-function drawAll(f=''){const box=document.getElementById('all');box.innerHTML='';WORDS.filter(w=>!f||w.hz.includes(f)||w.py.toLowerCase().includes(f.toLowerCase())||w.cz.toLowerCase().includes(f.toLowerCase())).slice(0,300).forEach(w=>{const d=document.createElement('div');d.innerHTML=`<span><b>${w.hz}</b> <span style="color:#c0392b">${w.py}</span></span><span>${w.cz}</span>`;d.style.cursor='pointer';d.onclick=()=>speak(w.hz);box.appendChild(d);});}
+function drawAll(f=''){const box=document.getElementById('all');box.innerHTML='';WORDS.filter(w=>!f||w.hz.includes(f)||w.py.toLowerCase().includes(f.toLowerCase())||w.cz.toLowerCase().includes(f.toLowerCase())).slice(0,300).forEach(w=>{const d=document.createElement('div');d.innerHTML=`<span><b>${w.hz}</b> <span style="color:#c0392b">${w.py}</span></span><span>${w.cz}</span>`;d.style.cursor='pointer';d.onclick=()=>speak(w.hz,wfile(w.id));box.appendChild(d);});}
 document.getElementById('q').oninput=e=>drawAll(e.target.value.trim());
 // init
 refill();showCard();updStats();mDrawScore();newMatch();newListen();newSent();drawAll();
