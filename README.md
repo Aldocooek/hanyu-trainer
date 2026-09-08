@@ -1,0 +1,26 @@
+# 🇨🇳 Hanyu Trainer — čínština HSK 1 (česky)
+
+Interaktivní trenér čínštiny: 171 slov HSK 1 (zjednodušené znaky + pinyin s tóny + čeština) + 30 vět na skládání.
+
+**Živá verze:** https://Aldocooek.github.io/hanyu-trainer/
+
+## Módy
+- 🃏 Kartičky (flashcards s chytrým opakováním chyb)
+- 🧩 Spojovačka 4×4 (Duolingo styl)
+- 🔊 Poslech — čínština → čeština i obráceně, bez mluvení
+- 🧱 Skládačka vět
+- 📥 Anki export (`hanyu_hsk1_cz.csv`) + návod na import
+
+## Chytrý trénink
+- ⚡ XP + levely + 🔥 streak (localStorage, žádný login)
+- Vážené losování: slova, kde chybuješ, se ukazují častěji
+- Úrovně L1 → L3 (60 → 120 → všech 171 slov), HSK 2 v přípravě
+- Zvuk zdarma přes hlas zařízení (Web Speech API, `zh-CN`)
+
+## Spuštění lokálně
+Stačí otevřít `index.html` v prohlížeči. Nebo:
+```
+python3 -m http.server 8000
+```
+
+Podrobný návod (Anki import, režim učení) viz `NAVOD.md`.

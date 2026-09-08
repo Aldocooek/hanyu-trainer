@@ -1,0 +1,172 @@
+﻿hanzi;pinyin;cesky;kategorie
+我;wǒ;já;lidé
+你;nǐ;ty;lidé
+我们;wǒmen;my;lidé
+你们;nǐmen;vy;lidé
+他;tā;on;lidé
+她;tā;ona;lidé
+他们;tāmen;oni;lidé
+妈妈;māma;máma;rodina
+爸爸;bàba;táta;rodina
+儿子;érzi;syn;rodina
+女儿;nǚ'ér;dcera;rodina
+哥哥;gēge;starší bratr;rodina
+姐姐;jiějie;starší sestra;rodina
+弟弟;dìdi;mladší bratr;rodina
+妹妹;mèimei;mladší sestra;rodina
+丈夫;zhàngfu;manžel;rodina
+妻子;qīzi;manželka;rodina
+孩子;háizi;dítě;rodina
+人;rén;člověk;lidé
+朋友;péngyou;kamarád;lidé
+同学;tóngxué;spolužák;škola
+先生;xiānsheng;pan;lidé
+小姐;xiǎojie;slečna;lidé
+名字;míngzi;jméno;základy
+家;jiā;domov / rodina;rodina
+咖啡;kāfēi;káva;jídlo
+茶;chá;čaj;jídlo
+水;shuǐ;voda;jídlo
+米饭;mǐfàn;vařená rýže;jídlo
+菜;cài;jídlo / chod;jídlo
+水果;shuǐguǒ;ovoce;jídlo
+苹果;píngguǒ;jablko;jídlo
+吃;chī;jíst;slovesa
+喝;hē;pít;slovesa
+一;yī;jedna;čísla
+二;èr;dva;čísla
+三;sān;tři;čísla
+四;sì;čtyři;čísla
+五;wǔ;pět;čísla
+六;liù;šest;čísla
+七;qī;sedm;čísla
+八;bā;osm;čísla
+九;jiǔ;devět;čísla
+十;shí;deset;čísla
+零;líng;nula;čísla
+个;gè;kus (měrové slovo);gramatika
+岁;suì;let (věk);čas
+本;běn;měrové slovo pro knihy;gramatika
+些;xiē;nějaké / trochu;gramatika
+块;kuài;kus / yuan (hovorově);peníze
+钱;qián;peníze;peníze
+今天;jīntiān;dnes;čas
+明天;míngtiān;zítra;čas
+昨天;zuótiān;včera;čas
+去年;qùnián;loni;čas
+年;nián;rok;čas
+月;yuè;měsíc;čas
+号;hào;číslo / den v měsíci;čas
+星期;xīngqī;týden;čas
+点;diǎn;hodina / bod;čas
+分钟;fēnzhōng;minuta;čas
+现在;xiànzài;teď;čas
+时候;shíhou;čas / když;čas
+上午;shàngwǔ;dopoledne;čas
+中午;zhōngwǔ;poledne;čas
+下午;xiàwǔ;odpoledne;čas
+是;shì;být (je);slovesa
+有;yǒu;mít;slovesa
+在;zài;být někde / v;slovesa
+要;yào;chtít / muset / bude;slovesa
+会;huì;umět / bude;slovesa
+能;néng;moci;slovesa
+可以;kěyǐ;smět / je možné;slovesa
+想;xiǎng;chtít / myslet;slovesa
+喜欢;xǐhuan;mít rád;slovesa
+爱;ài;milovat;slovesa
+说;shuō;říkat / mluvit;slovesa
+读;dú;číst nahlas;slovesa
+看;kàn;dívat se;slovesa
+看见;kànjiàn;uvidět / spatřit;slovesa
+听;tīng;poslouchat;slovesa
+写;xiě;psát;slovesa
+叫;jiào;jmenovat se / volat;slovesa
+来;lái;přijít;slovesa
+去;qù;jít;slovesa
+回;huí;vrátit se;slovesa
+住;zhù;bydlet;slovesa
+买;mǎi;koupit;slovesa
+开;kāi;otevřít / zapnout / řídit;slovesa
+坐;zuò;sedět / jet (dopravou);slovesa
+做;zuò;dělat;slovesa
+认识;rènshi;znát / poznat;slovesa
+睡觉;shuìjiào;spát;slovesa
+打电话;dǎ diànhuà;telefonovat;slovesa
+下雨;xiàyǔ;prší;příroda
+学习;xuéxí;učit se;škola
+学校;xuéxiào;škola;škola
+老师;lǎoshī;učitel;škola
+学生;xuéshēng;student;škola
+汉语;Hànyǔ;čínština;škola
+字;zì;znak;škola
+书;shū;kniha;škola
+上班;shàngbān;jít do práce;práce
+下班;xiàbān;jít z práce;práce
+工作;gōngzuò;práce / pracovat;práce
+医生;yīshēng;lékař;práce
+医院;yīyuàn;nemocnice;místa
+商店;shāngdiàn;obchod;místa
+饭店;fàndiàn;restaurace;místa
+北京;Běijīng;Peking;místa
+中国;Zhōngguó;Čína;místa
+桌子;zhuōzi;stůl;věci
+椅子;yǐzi;židle;věci
+电脑;diànnǎo;počítač;věci
+电视;diànshì;televize;věci
+电影;diànyǐng;film;věci
+电话;diànhuà;telefon;věci
+手机;shǒujī;mobil;věci
+衣服;yīfu;oblečení;věci
+杯子;bēizi;hrnek / sklenice;věci
+东西;dōngxi;věc;věci
+出租车;chūzūchē;taxi;doprava
+飞机;fēijī;letadlo;doprava
+狗;gǒu;pes;zvířata
+猫;māo;kočka;zvířata
+天气;tiānqì;počasí;příroda
+冷;lěng;studený;popis
+大;dà;velký;popis
+小;xiǎo;malý;popis
+多;duō;mnoho;popis
+少;shǎo;málo;popis
+好;hǎo;dobrý;popis
+漂亮;piàoliang;hezký;popis
+高兴;gāoxìng;rád / šťastný;popis
+不;bù;ne (zápor);gramatika
+没;méi;ne / nemít;gramatika
+很;hěn;velmi;gramatika
+太;tài;příliš;gramatika
+都;dōu;všichni;gramatika
+和;hé;a / s;gramatika
+的;de;přivlastňovací částice;gramatika
+了;le;částice změny / hotovo;gramatika
+吗;ma;otázková částice;gramatika
+呢;ne;a co…? (částice);gramatika
+这;zhè;tento;ukazovací
+那;nà;tamten;ukazovací
+这儿;zhèr;tady;ukazovací
+那儿;nàr;tam;ukazovací
+哪;nǎ;který;otázky
+哪儿;nǎr;kde;otázky
+谁;shéi;kdo;otázky
+什么;shénme;co;otázky
+多少;duōshao;kolik;otázky
+几;jǐ;kolik (málo);otázky
+怎么;zěnme;jak;otázky
+怎么样;zěnmeyàng;jaké to je;otázky
+上;shàng;na / nahoru;místo
+下;xià;dolů / pod;místo
+里;lǐ;uvnitř;místo
+前面;qiánmian;vpředu / před;místo
+后面;hòumian;vzadu / za;místo
+谢谢;xièxie;děkuji;zdvořilost
+对不起;duìbuqǐ;promiň;zdvořilost
+没关系;méi guānxi;to nevadí;zdvořilost
+不客气;bú kèqi;není zač;zdvořilost
+再见;zàijiàn;na shledanou;zdvořilost
+喂;wèi;haló (do telefonu);zdvořilost
+让;ràng;nechat / dovolit;slovesa
+一点儿;yìdiǎnr;trochu;gramatika
+见;jiàn;vidět / setkat se;slovesa
+饭;fàn;jídlo / vařená rýže;jídlo

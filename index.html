@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Hanyu Trainer — čínština HSK 1 🇨🇳</title>
+<style>
+:root{--red:#c0392b;--ink:#1e1e1e;--muted:#777;--bg:#faf7f2;--card:#fff;--green:#1e9e62;--line:#eee3d6}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink)}
+header{background:var(--red);color:#fff;padding:18px 16px 14px;position:sticky;top:0;z-index:10}
+header h1{margin:0;font-size:20px}
+header p{margin:4px 0 0;opacity:.9;font-size:13px}
+#stats{margin-top:8px;font-size:13px;background:rgba(255,255,255,.18);display:inline-block;padding:4px 10px;border-radius:20px}
+nav{display:flex;gap:8px;padding:12px;overflow-x:auto;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0}
+nav button{flex:1;min-width:110px;border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 8px;font-size:14px;cursor:pointer;white-space:nowrap}
+nav button.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+main{max-width:720px;margin:0 auto;padding:16px 14px 90px}
+section{display:none}
+section.active{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:28px 20px;text-align:center;box-shadow:0 4px 18px rgba(0,0,0,.05)}
+.hanzi{font-size:64px;line-height:1.2;margin:6px 0}
+.pinyin{font-size:22px;color:var(--red);margin:4px 0;min-height:28px}
+.czech{font-size:20px;margin:6px 0;min-height:26px}
+.cat{font-size:12px;color:var(--muted)}
+.hint{color:var(--muted);font-size:14px;margin:10px 0}
+.row{display:flex;gap:10px;margin-top:14px}
+.row button{flex:1}
+button.big{border:none;border-radius:14px;padding:14px;font-size:16px;cursor:pointer}
+.primary{background:var(--ink);color:#fff}
+.ghost{background:#fff;border:1.5px solid var(--ink);color:var(--ink)}
+.audio{background:var(--red);color:#fff}
+.good{background:var(--green);color:#fff}
+.warn{background:#fff;border:1.5px solid #ccc}
+button.big:active{transform:scale(.98)}
+select{width:100%;padding:12px;border-radius:12px;border:1.5px solid var(--line);font-size:15px;margin-top:12px;background:#fff}
+.row select{flex:1;width:auto;margin-top:0;padding:12px;border-radius:12px;border:1.5px solid var(--line);font-size:14px;background:#fff}
+.progress{height:8px;background:#eee;border-radius:99px;margin:14px 0;overflow:hidden}
+.progress i{display:block;height:100%;background:var(--green);width:0%}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.pick{border:2px solid var(--line);background:#fff;border-radius:14px;padding:16px 10px;font-size:17px;cursor:pointer;min-height:64px}
+.pick small{display:block;font-size:12px;color:var(--muted);margin-top:4px}
+.pick.sel{border-color:var(--ink);background:#1e1e1e;color:#fff}
+.pick.sel small{color:#ccc}
+.pick.ok{border-color:var(--green);background:#e7f7ee;color:#0c6b3e}
+.pick.bad{border-color:var(--red);background:#fdecea;color:var(--red);animation:shake .25s}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.opts{display:grid;gap:10px;margin-top:12px}
+.opt{border:2px solid var(--line);background:#fff;border-radius:14px;padding:15px;font-size:17px;cursor:pointer;text-align:left}
+.opt.ok{border-color:var(--green);background:#e7f7ee}
+.opt.bad{border-color:var(--red);background:#fdecea}
+.tokens{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;min-height:52px;background:#fff;border:1.5px dashed #ccc;border-radius:14px;padding:12px}
+.tok{border:1.5px solid var(--ink);background:#fff;border-radius:10px;padding:10px 14px;font-size:19px;cursor:pointer}
+.tok.used{opacity:.25;pointer-events:none}
+.answer{min-height:56px}
+.feedback{margin-top:12px;font-size:16px;font-weight:600}
+.feedback.ok{color:var(--green)} .feedback.no{color:var(--red)}
+.box{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:12px;font-size:14.5px;line-height:1.6}
+.box h3{margin:0 0 8px;font-size:15px}
+.box ol,.box ul{margin:8px 0;padding-left:20px}
+code{background:#f1ece4;padding:2px 6px;border-radius:6px;font-size:13px}
+a{color:var(--red)}
+footer{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);padding:10px 14px;font-size:12.5px;color:var(--muted);text-align:center}
+.search{width:100%;padding:12px;border-radius:12px;border:1.5px solid var(--line);font-size:15px;margin-bottom:10px}
+.list{font-size:14px}
+.list div{display:flex;justify-content:space-between;gap:8px;padding:9px 4px;border-bottom:1px solid var(--line)}
+.list b{font-size:17px}
+@media(max-width:480px){.hanzi{font-size:56px}}
+</style>
+</head>
+<body>
+<header>
+<h1>🇨🇳 Hanyu Trainer — HSK 1</h1>
+<p>Vidíš • Slyšíš • Spojuješ • Skládáš věty. Bez mluvení. Česky.</p>
+<div id="stats">Umím 0 / 171</div>
+</header>
+<nav>
+<button data-tab="cards" class="active">🃏 Kartičky</button>
+<button data-tab="match">🧩 Spojovačka</button>
+<button data-tab="listen">🔊 Poslech</button>
+<button data-tab="sent">🧱 Věty</button>
+<button data-tab="anki">📥 Anki</button>
+</nav>
+<main>
+<!-- KARTIČKY -->
+<section id="tab-cards" class="active">
+<div class="card">
+<div class="cat" id="c-cat"></div>
+<div class="hanzi" id="c-hz">我</div>
+<div class="pinyin" id="c-py">?</div>
+<div class="czech" id="c-cz">?</div>
+<div class="row">
+<button class="big audio" id="c-speak">🔊 Přehrát</button>
+<button class="big ghost" id="c-show">👁 Ukázat</button>
+</div>
+<div class="row">
+<button class="big warn" id="c-no">✕ Ještě ne</button>
+<button class="big good" id="c-yes">✓ Umím</button>
+</div>
+<div class="row">
+<button class="big ghost" id="c-next">Další →</button>
+</div>
+<div class="progress"><i id="c-bar"></i></div>
+<div class="hint" id="c-hint"></div>
+</div>
+<select id="c-level"><option value="L1">Úroveň 1 — prvních 60 slov</option><option value="L2">Úroveň 2 — prvních 120 slov</option><option value="L3" selected>Úroveň 3 — celá HSK 1</option><option disabled>HSK 2 — dalších ~130 slov (brzy)</option></select>
+<select id="c-filter"><option value="">Všechny kategorie</option></select>
+<label style="font-size:13px;color:#777"><input type="checkbox" id="c-onlynew"> ukazovat jen neuměná</label>
+<label style="font-size:13px;color:#777;margin-left:10px"><input type="checkbox" id="c-weak"> přednostně slabá slova (kde chybuju)</label>
+</section>
+
+<!-- SPOJOVAČKA -->
+<section id="tab-match">
+<div class="box"><h3>🧩 Spojovačka 4 × 4 (jako Duolingo)</h3>
+Vlevo čínsky, vpravo česky. Nejdřív klikni na čínské slovo (přitom se ti i přehraje), pak na český význam. <span id="m-score"><b>Skóre: 0</b></span>
+<div class="row"><select id="m-level"><option value="L1">Úroveň 1 — 60 slov</option><option value="L2">Úroveň 2 — 120 slov</option><option value="L3" selected>Úroveň 3 — HSK 1</option><option disabled>HSK 2 (brzy)</option></select><select id="m-filter"><option value="">Vše</option></select></div></div>
+<div class="grid2">
+<div id="m-left" style="display:grid;gap:10px"></div>
+<div id="m-right" style="display:grid;gap:10px"></div>
+</div>
+<div class="row"><button class="big primary" id="m-new">🔀 Nové kolo</button></div>
+<div class="feedback" id="m-fb"></div>
+</section>
+
+<!-- POSLECH -->
+<section id="tab-listen">
+<div class="box"><h3>🔊 Poslech — vyber správný význam</h3>
+Klikni na Přehrát, poslechni si slovo a vyber ze 4 možností česky. Tlačítkem Směr to otočíš (vidíš česky → vybíráš čínsky). Mluvit nemusíš.
+<div class="row"><select id="l-level"><option value="L1">Úroveň 1 — 60 slov</option><option value="L2">Úroveň 2 — 120 slov</option><option value="L3" selected>Úroveň 3 — HSK 1</option><option disabled>HSK 2 (brzy)</option></select><select id="l-filter"><option value="">Vše</option></select></div>
+<div class="row"><button class="big ghost" id="l-dir">Směr: 🔊 čínština → čeština</button></div></div>
+<div class="card">
+<button class="big audio" id="l-play" style="width:100%">🔊 Přehrát slovo</button>
+<div class="pinyin" id="l-py" style="font-size:14px">?</div>
+<div class="opts" id="l-opts"></div>
+<div class="feedback" id="l-fb"></div>
+<div class="row"><button class="big ghost" id="l-next">Další slovo →</button></div>
+</div>
+</section>
+
+<!-- VĚTY -->
+<section id="tab-sent">
+<div class="box"><h3>🧱 Skládačka vět</h3>
+Přečti si českou větu, poslechni si čínštinu a klikáním poskládej dílky ve správném pořadí.</div>
+<div class="card">
+<div class="czech" id="s-cz" style="font-size:21px"></div>
+<div class="hint" id="s-py"></div>
+<div class="row"><button class="big audio" id="s-play">🔊 Přehrát větu</button>
+<button class="big ghost" id="s-hintbtn">Pinyin</button></div>
+<div style="text-align:left;font-size:13px;color:#777;margin-top:10px">Tvoje skladba (kliknutím odebereš):</div>
+<div class="tokens answer" id="s-answer"></div>
+<div style="text-align:left;font-size:13px;color:#777">Dílky:</div>
+<div class="tokens" id="s-pool"></div>
+<div class="row">
+<button class="big primary" id="s-check">Zkontrolovat</button>
+<button class="big ghost" id="s-next">Nová věta →</button>
+</div>
+<div class="feedback" id="s-fb"></div>
+</div>
+</section>
+
+<!-- ANKI -->
+<section id="tab-anki">
+<div class="box">
+<h3>📥 Anki — 171 karet zdarma</h3>
+<p>Anki je open-source aplikace na flashcards s chytrým opakováním. Na mobilu:</p>
+<ul>
+<li><b>Android:</b> <b>AnkiDroid</b> — zdarma v Google Play</li>
+<li><b>iPhone:</b> <b>AnkiMobile</b> — placená (~$25), alternativa zdarma: <b>AnkiWeb</b> v prohlížeči na <a href="https://apps.ankiweb.net/" target="_blank">apps.ankiweb.net</a></li>
+<li><b>Počítač:</b> Anki zdarma z <a href="https://apps.ankiweb.net/" target="_blank">apps.ankiweb.net</a></li>
+</ul>
+<p><button class="big primary" id="dl-csv" style="width:100%">⬇ Stáhnout hanyu_hsk1_cz.csv (171 slov)</button></p>
+<h3>Jak CSV dostat do mobilu (2 minuty)</h3>
+<ol>
+<li>V mobilu otevři tuhle stránku a stáhni CSV (nebo si ho pošli e-mailem / přes Drive).</li>
+<li>Otevři <b>AnkiDroid → ⋮ → Importovat</b> (na PC: Soubor → Importovat).</li>
+<li>Vyber stažené <code>hanyu_hsk1_cz.csv</code>.</li>
+<li>Nastav: <b>Oddělovač: středník (;)</b>, <b>Kódování: UTF-8</b>, typ poznámky: <b>Basic</b>.</li>
+<li>Namapuj sloupce: 1 → Přední (znaky), 2 → Zadní (pinyin), 3 → Zadní (čeština). Zaškrtni „Povolit HTML“.</li>
+<li>Importuj. Hotovo — uvidíš znak, po otočení pinyin + význam. 🔊 Zvuk v Anki: karta nemá MP3 (pro offline by byl balík ~50 MB), takže výslovnost trénuj tady v trenéru tlačítkem 🔊, v Anki se uč znaky.</li>
+</ol>
+<p style="color:#777">Tip: v Anki si zapni tahání denního limitu na 20 nových karet — 171 slov dáš cca za 9 dní.</p>
+</div>
+<div class="box"><h3>🗺 Cesta k HSK 2 (300 slov)</h3>
+<p>HSK 2 = tvých 171 slov + cca 130 nových (dohromady 300). Zkouška má jen poslech + čtení, na pass stačí 120/200.</p>
+<ol>
+<li><b>Úroveň 1–3:</b> projeď HSK 1 tady v trenéru (60 → 120 → vše).</li>
+<li><b>Pak:</b> přidám HSK 2 balík — nová slovesa (觉得, 知道…), pocity a jídlo (好吃, 饿, 渴…), čas (常常, 以前, 以后…), částice 吧/非常/一起… + delší věty.</li>
+<li><b>Chytrý trénink už běží:</b> slova, kde chybuješ, se ti ukazují častěji (vážené losování). XP, level a streak vidíš nahoře.</li>
+</ol></div>
+<div class="box">
+<h3>🔎 Seznam všech 171 slov</h3>
+<input class="search" id="q" placeholder="Hledej: káva, máma, hao…">
+<div class="list" id="all"></div>
+</div>
+</section>
+</main>
+<footer>171 slov HSK 1 • zjednodušené znaky + pinyin + čeština • zvuk = hlas tvého zařízení (zdarma, bez klíče)</footer>
+<script src="words.js"></script>
+<script>
+// ---------- TTS (zdarma, hlas zařízení) ----------
+let zhVoice=null;
+function pickVoice(){try{const vs=speechSynthesis.getVoices();zhVoice=vs.find(v=>v.lang&&v.lang.toLowerCase().startsWith('zh'))||vs.find(v=>/chinese|mandarin|xiaoxiao|yunxi|ting|mei/i.test(v.name))||null;}catch(e){}}
+if('speechSynthesis' in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice;}
+function speak(t){if(!('speechSynthesis' in window)){alert('Prohlížeč neumí hlas. Zkus Chrome / Safari.');return;}speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='zh-CN';u.rate=0.8;if(zhVoice)u.voice=zhVoice;speechSynthesis.speak(u);}
+// ---------- stav ----------
+let known=new Set(JSON.parse(localStorage.getItem('hanyu_known')||'[]'));
+let XP=parseInt(localStorage.getItem('hanyu_xp')||'0');
+let ERR={}; try{ERR=JSON.parse(localStorage.getItem('hanyu_err')||'{}');}catch(e){ERR={};}
+let STREAK={last:'',n:0}; try{STREAK=JSON.parse(localStorage.getItem('hanyu_streak')||'{"last":"","n":0}');}catch(e){STREAK={last:'',n:0};}
+function save(){localStorage.setItem('hanyu_known',JSON.stringify([...known]));updStats();}
+function saveXP(){localStorage.setItem('hanyu_xp',XP);}
+function saveErr(){localStorage.setItem('hanyu_err',JSON.stringify(ERR));}
+function lvl(){return 1+Math.floor(XP/100);}
+function todayStr(){return new Date().toISOString().slice(0,10);}
+function bumpStreak(){const t=todayStr();if(STREAK.last!==t){const y=new Date(Date.now()-864e5).toISOString().slice(0,10);STREAK.n=(STREAK.last===y)?STREAK.n+1:1;STREAK.last=t;localStorage.setItem('hanyu_streak',JSON.stringify(STREAK));}}
+function addXP(n){bumpStreak();XP+=n;saveXP();updStats();}
+function updStats(){document.getElementById('stats').textContent=`Umím ${known.size} / ${WORDS.length} • ⚡ ${XP} XP • Lv ${lvl()} • 🔥 ${STREAK.n}`;document.getElementById('c-bar').style.width=(WORDS.length?known.size/WORDS.length*100:0)+'%';}
+function errW(id){return 1+3*(ERR[id]||0);}
+function recErr(id){ERR[id]=(ERR[id]||0)+1;saveErr();}
+function recOk(id){if(ERR[id]){ERR[id]--;if(!ERR[id])delete ERR[id];saveErr();}}
+function wpick(pool,n){const bag=[...pool],out=[];while(bag.length&&out.length<n){let tot=0;for(const w of bag)tot+=errW(w.id);let r=Math.random()*tot,i=0;for(;i<bag.length;i++){r-=errW(bag[i].id);if(r<=0)break;}out.push(bag.splice(Math.min(i,bag.length-1),1)[0]);}return out;}
+function wshuffle(pool){return wpick(pool,pool.length);}
+// Úrovně: L1 prvních 60 slov, L2 prvních 120, L3 celá HSK 1. HSK 2 = dalších cca 130 slov (zamčeno, přijde).
+function lvlPool(all,lv){if(lv==='L1')return all.filter(w=>w.id<=60);if(lv==='L2')return all.filter(w=>w.id<=120);return all;}
+function poolFor(catSel,lvlSel){const c=catSel.value,l=lvlSel.value;return lvlPool(WORDS.filter(w=>!c||w.cat===c),l);}
+function fillCats(sel){[...new Set(WORDS.map(w=>w.cat))].forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;sel.appendChild(o);});}
+function distractors(cur,pool,n){const same=pool.filter(w=>w.id!==cur.id&&w.cat===cur.cat),rest=pool.filter(w=>w.id!==cur.id&&w.cat!==cur.cat);shuffle(same);shuffle(rest);return [...same,...rest].slice(0,n);}
+// tabs
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));document.getElementById('tab-'+b.dataset.tab).classList.add('active');});
+// ---------- kartičky ----------
+let deck=[...WORDS],ci=0,revealed=false;
+const filt=document.getElementById('c-filter');
+fillCats(filt);
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function refill(){const onlyNew=document.getElementById('c-onlynew').checked;const weak=document.getElementById('c-weak').checked;let p=poolFor(filt,document.getElementById('c-level'));if(weak){const w=p.filter(x=>ERR[x.id]);if(w.length)p=w;}deck=p.filter(w=>!onlyNew||!known.has(w.id));if(!deck.length)deck=[...p];deck=wshuffle(deck);ci=0;}
+function showCard(){const w=deck[ci%deck.length];revealed=false;document.getElementById('c-hz').textContent=w.hz;document.getElementById('c-cat').textContent='#'+w.id+' • '+w.cat;document.getElementById('c-py').textContent='?';document.getElementById('c-cz').textContent='?';document.getElementById('c-hint').textContent=known.has(w.id)?'✓ tohle už umíš':'';
+document.getElementById('c-speak').onclick=()=>speak(w.hz);}
+function reveal(){const w=deck[ci%deck.length];revealed=true;document.getElementById('c-py').textContent=w.py;document.getElementById('c-cz').textContent=w.cz;}
+document.getElementById('c-show').onclick=reveal;
+document.getElementById('c-speak').onclick=()=>speak(deck[ci%deck.length].hz);
+document.getElementById('c-yes').onclick=()=>{const w=deck[ci%deck.length];known.add(w.id);recOk(w.id);addXP(10);save();ci++;if(ci>=deck.length)refill();showCard();};
+document.getElementById('c-no').onclick=()=>{ci++;if(ci>=deck.length)refill();showCard();};
+document.getElementById('c-next').onclick=()=>{ci++;if(ci>=deck.length)refill();showCard();};
+filt.onchange=refill;document.getElementById('c-level').onchange=refill;document.getElementById('c-onlynew').onchange=refill;document.getElementById('c-weak').onchange=refill;
+// ---------- spojovačka ----------
+let mSel=null,mPairs=[],mDone=0,mScore=parseInt(localStorage.getItem('hanyu_match')||'0');
+function mDrawScore(){document.getElementById('m-score').innerHTML=`<b>Skóre: ${mScore}</b>`;}
+fillCats(document.getElementById('m-filter'));
+function newMatch(){mDone=0;mSel=null;document.getElementById('m-fb').textContent='';document.getElementById('m-fb').className='feedback';const mp=poolFor(document.getElementById('m-filter'),document.getElementById('m-level'));mPairs=wpick(mp.length>=4?mp:WORDS,4);const L=document.getElementById('m-left'),R=document.getElementById('m-right');L.innerHTML='';R.innerHTML='';const rights=shuffle([...mPairs]);
+mPairs.forEach(w=>{const b=document.createElement('button');b.className='pick';b.innerHTML=`${w.hz}<small>${w.py}</small>`;b.onclick=()=>{document.querySelectorAll('#m-left .pick').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');mSel=w;speak(w.hz);};b.dataset.id=w.id;L.appendChild(b);});
+rights.forEach(w=>{const b=document.createElement('button');b.className='pick';b.textContent=w.cz;b.onclick=()=>{if(!mSel)return;if(mSel.id===w.id){b.classList.add('ok');document.querySelector(`#m-left .pick[data-id="${w.id}"]`)?.classList.add('ok');document.querySelector(`#m-left .pick[data-id="${w.id}"]`).style.pointerEvents='none';b.style.pointerEvents='none';mSel=null;mDone++;mScore++;localStorage.setItem('hanyu_match',mScore);mDrawScore();recOk(w.id);addXP(5);if(mDone===4){document.getElementById('m-fb').textContent='🎉 Skvělé! Dávám nové kolo…';document.getElementById('m-fb').className='feedback ok';setTimeout(newMatch,1200);}}else{recErr(mSel.id);b.classList.add('bad');document.getElementById('m-fb').textContent=`Ne — „${mSel.hz} (${mSel.py})" = ${mSel.cz}. Zkus znovu.`;document.getElementById('m-fb').className='feedback no';setTimeout(()=>b.classList.remove('bad'),700);}};b.dataset.id=w.id;R.appendChild(b);});}
+document.getElementById('m-new').onclick=newMatch;
+document.getElementById('m-level').onchange=newMatch;document.getElementById('m-filter').onchange=newMatch;
+// ---------- poslech ----------
+let lCur=null,lRev=false;
+fillCats(document.getElementById('l-filter'));
+function newListen(){document.getElementById('l-fb').textContent='';document.getElementById('l-fb').className='feedback';const lp=poolFor(document.getElementById('l-filter'),document.getElementById('l-level'));lCur=wpick(lp.length?lp:WORDS,1)[0];const opts=shuffle([lCur,...distractors(lCur,lp.length>=4?lp:WORDS,3)]);const box=document.getElementById('l-opts');box.innerHTML='';
+if(!lRev){document.getElementById('l-py').textContent='? (poslouchej a vyber česky)';opts.forEach(w=>{const b=document.createElement('button');b.className='opt';b.textContent=w.cz;b.onclick=()=>{if(w.id===lCur.id){b.classList.add('ok');document.getElementById('l-fb').textContent=`✓ Ano! ${lCur.hz} (${lCur.py}) = ${lCur.cz}`;document.getElementById('l-fb').className='feedback ok';document.getElementById('l-py').textContent=lCur.hz+' • '+lCur.py;known.add(lCur.id);save();recOk(lCur.id);addXP(10);}else{b.classList.add('bad');recErr(lCur.id);document.getElementById('l-fb').textContent='✕ Ne — poslechni znovu a zkus jinou.';document.getElementById('l-fb').className='feedback no';}};box.appendChild(b);});speak(lCur.hz);}
+else{document.getElementById('l-py').textContent=`${lCur.cz} — vyber čínsky`;opts.forEach(w=>{const b=document.createElement('button');b.className='opt';b.innerHTML=`${w.hz} <span style="color:#999">${w.py}</span>`;b.onclick=()=>{if(w.id===lCur.id){b.classList.add('ok');document.getElementById('l-fb').textContent=`✓ Ano! ${lCur.hz} (${lCur.py}) = ${lCur.cz}`;document.getElementById('l-fb').className='feedback ok';known.add(lCur.id);save();recOk(lCur.id);addXP(10);speak(lCur.hz);}else{b.classList.add('bad');recErr(lCur.id);document.getElementById('l-fb').textContent=`✕ Ne — správně je ${lCur.hz} (${lCur.py}).`;document.getElementById('l-fb').className='feedback no';}};box.appendChild(b);});}}
+document.getElementById('l-play').onclick=()=>lCur&&speak(lCur.hz);
+document.getElementById('l-dir').onclick=e=>{lRev=!lRev;e.target.textContent=lRev?'Směr: 🇨🇿 čeština → čínština':'Směr: 🔊 čínština → čeština';newListen();};
+document.getElementById('l-next').onclick=newListen;
+document.getElementById('l-level').onchange=newListen;document.getElementById('l-filter').onchange=newListen;
+// ---------- věty ----------
+let sCur=null,sBuilt=[],sShowPy=false;
+function newSent(){sBuilt=[];sShowPy=false;document.getElementById('s-py').textContent='';document.getElementById('s-fb').textContent='';sCur=SENTENCES[Math.floor(Math.random()*SENTENCES.length)];document.getElementById('s-cz').textContent=sCur.cz;const pool=document.getElementById('s-pool');pool.innerHTML='';shuffle([...sCur.tokens]).forEach(t=>{const b=document.createElement('button');b.className='tok';b.textContent=t;b.onclick=()=>{sBuilt.push(t);b.classList.add('used');drawAnswer();speak(t);};pool.appendChild(b);});drawAnswer();}
+function drawAnswer(){const a=document.getElementById('s-answer');a.innerHTML='';sBuilt.forEach((t,i)=>{const b=document.createElement('button');b.className='tok';b.textContent=t;b.title='odebrat';b.onclick=()=>{sBuilt.splice(i,1);const poolBtn=[...document.getElementById('s-pool').children].find(x=>x.textContent===t&&x.classList.contains('used'));if(poolBtn)poolBtn.classList.remove('used');drawAnswer();};a.appendChild(b);});}
+document.getElementById('s-check').onclick=()=>{const ok=sBuilt.join('')===sCur.tokens.join('');const fb=document.getElementById('s-fb');const wids=sCur.tokens.map(t=>{const w=WORDS.find(x=>x.hz===t);return w?w.id:null;}).filter(Boolean);if(ok){fb.textContent=`🎉 Správně! ${sCur.full} (${sCur.py})`;fb.className='feedback ok';wids.forEach(recOk);addXP(15);speak(sCur.full);}else{wids.forEach(recErr);fb.textContent='Ještě ne — zkus přeházet dílky. Nápověda: '+sCur.tokens.join(' · ');fb.className='feedback no';}};
+document.getElementById('s-next').onclick=newSent;
+document.getElementById('s-play').onclick=()=>sCur&&speak(sCur.full);
+document.getElementById('s-hintbtn').onclick=()=>{sShowPy=!sShowPy;document.getElementById('s-py').textContent=sShowPy?sCur.py+' • '+sCur.full:'';};
+// ---------- anki csv + seznam ----------
+function csvText(){let s='hanzi;pinyin;cesky;kategorie\n';WORDS.forEach(w=>{s+=`${w.hz};${w.py};${w.cz};${w.cat}\n`;});return s;}
+document.getElementById('dl-csv').onclick=()=>{const blob=new Blob(["\uFEFF"+csvText()],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='hanyu_hsk1_cz.csv';a.click();};
+function drawAll(f=''){const box=document.getElementById('all');box.innerHTML='';WORDS.filter(w=>!f||w.hz.includes(f)||w.py.toLowerCase().includes(f.toLowerCase())||w.cz.toLowerCase().includes(f.toLowerCase())).slice(0,300).forEach(w=>{const d=document.createElement('div');d.innerHTML=`<span><b>${w.hz}</b> <span style="color:#c0392b">${w.py}</span></span><span>${w.cz}</span>`;d.style.cursor='pointer';d.onclick=()=>speak(w.hz);box.appendChild(d);});}
+document.getElementById('q').oninput=e=>drawAll(e.target.value.trim());
+// init
+refill();showCard();updStats();mDrawScore();newMatch();newListen();newSent();drawAll();
+</script>
+</body>
+</html>
