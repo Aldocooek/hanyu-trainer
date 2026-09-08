@@ -11,7 +11,8 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from playwright.sync_api import sync_playwright
 
 PORT = 8129
-TABS = ["cards", "match", "listen", "sent", "speak", "anki"]
+NAV_TABS = ["home", "cards", "mix", "fix"]
+MENU_TABS = ["match", "listen", "sent", "speak", "anki", "set"]
 VIEWPORTS = {
     "desktop": {"width": 1280, "height": 800},
     "mobile": {"width": 390, "height": 844},
@@ -34,8 +35,15 @@ def main():
             pg.on("pageerror", lambda e: msgs.append(str(e)))
             pg.goto(f"http://127.0.0.1:{PORT}/index.html")
             pg.wait_for_timeout(1200)
-            for tab in TABS:
-                pg.click(f'nav button[data-tab="{tab}"]')
+            for tab in NAV_TABS:
+                pg.click(f'#tabbar button[data-tab="{tab}"]')
+                pg.wait_for_timeout(500)
+                pg.screenshot(path=f"qa/{vp}_{tab}.png", full_page=True)
+                print("shot", f"qa/{vp}_{tab}.png")
+            for tab in MENU_TABS:
+                pg.click('#moreBtn')
+                pg.wait_for_timeout(300)
+                pg.click(f'#moreMenu .sheet button[data-tab="{tab}"]')
                 pg.wait_for_timeout(500)
                 pg.screenshot(path=f"qa/{vp}_{tab}.png", full_page=True)
                 print("shot", f"qa/{vp}_{tab}.png")

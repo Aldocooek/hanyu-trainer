@@ -87,3 +87,10 @@ Požadavek: telefon poslouchá a hodnotí, **data nikam neodejdou**. Verdikt po 
 
 ## 9) QA: vzhled ověřen v prohlížeči
 `python3 scripts/qa_shots.py` — všech 6 záložek na desktopu (1280) i mobilu (390), 0 JS chyb. Nalezen a opraven 1 problém: fixní patička mohla na úzkém mobilu překrývat tlačítka (padding dna 90 → 130 px).
+
+## 10) v3: hravý design + PWA + denní režim
+- **Design:** Duolingo styl — chunky 3D tlačítka, spodní tab bar (Domů / Karty / Mix / Opravna / Více), **tónové barvy pinyinu** (1🔴 2🟠 3🟢 4🔵), světlá + tmavá + systém, Baloo 2 font.
+- **Domů:** kroužek denního cíle (50 XP), streak, rychlé akce, banner když hoří streak.
+- **⚡ Mix:** 12 kol (poslech/karty/věty/spojovačka), souhrn + confetti. **🩹 Opravna:** totéž, jen slabá slova.
+- **Nastavení:** vzhled, animace (auto/plné/klidné — auto pozná slabé zařízení), pomalý zvuk 0.7×, vibrace (Android), připomínka streaku, smazat postup. Desktop: klávesy (→, mezerník, 1/2, 1–4 v poslechu).
+- **PWA:** `manifest.json` + `sw.js` (app shell offline, audio se docachuje po prvním přehrání) + ikony (`scripts/make_icons.py`). Instalace: v mobilu Otevřít → Sdílet → „Přidat na plochu". Odznak s dluhem XP na ikonce (Android/Chrome), notifikace při otevření když hoří streak. Upřímná limita: web neumí budík bez serveru; iPhone nevibruje.

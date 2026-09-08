@@ -34,7 +34,7 @@ button.big{border:none;border-radius:14px;padding:14px;font-size:16px;cursor:poi
 .warn{background:#fff;border:1.5px solid #ccc}
 button.big:active{transform:scale(.98)}
 select{width:100%;padding:12px;border-radius:12px;border:1.5px solid var(--line);font-size:15px;margin-top:12px;background:#fff}
-.row select{flex:1;width:auto;margin-top:0;padding:12px;border-radius:12px;border:1.5px solid var(--line);font-size:14px;background:#fff}
+.row select{flex:1;width:auto;margin-top:0;padding:12px;border-radius:12px;border:1.5px solid var(--line);font-size:14px;background:var(--card);color:var(--ink)}
 .progress{height:8px;background:#eee;border-radius:99px;margin:14px 0;overflow:hidden}
 .progress i{display:block;height:100%;background:var(--green);width:0%}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
@@ -67,24 +67,215 @@ footer{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px sol
 .list b{font-size:17px}
 @media(max-width:480px){.hanzi{font-size:56px}}
 </style>
+<style id="v3">
+/* ===== HANYU v3 — hravý Duolingo styl ===== */
+:root{
+--bg:#fff9f0;--bg2:#fff;--ink:#3c3c3c;--muted:#8a8a8a;--line:#e5e5e5;
+--card:#ffffff;--blue:#1cb0f6;--blue-d:#1899d6;--green:#58cc02;--green-d:#58a700;
+--red:#ff4b4b;--red-d:#d33131;--yellow:#ffb800;--purple:#ce82ff;--teal:#00c2a8;
+--head1:#ff4b4b;--head2:#ff7a3d;--shadow:0 6px 20px rgba(60,60,60,.08);
+--display:'Baloo 2',-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;
+}
+html[data-theme="dark"]{
+--bg:#131f24;--bg2:#1a2b33;--ink:#f1f7fb;--muted:#9db4c0;--line:#37464f;
+--card:#202f36;--blue:#1cb0f6;--blue-d:#1899d6;--green:#7ae000;--green-d:#58a700;
+--red:#ff6b6b;--red-d:#d33131;--head1:#232f36;--head2:#2e4049;--shadow:0 6px 20px rgba(0,0,0,.35);
+color-scheme:dark;
+}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'PingFang SC','Microsoft YaHei',sans-serif;padding-bottom:0}
+h1,h2,h3,.big,.qbtn,.pick,.opt,.tok{font-family:var(--display)}
+/* header */
+header{background:linear-gradient(135deg,var(--head1),var(--head2));border-radius:0 0 26px 26px;box-shadow:var(--shadow)}
+html[data-theme="dark"] header{border:1px solid var(--line);border-top:none}
+header h1{font-size:23px;font-weight:800;letter-spacing:.3px}
+.topbar{display:flex;align-items:center;justify-content:space-between}
+.iconbtn{background:rgba(255,255,255,.22);border:none;border-radius:12px;font-size:19px;padding:6px 10px;cursor:pointer;color:#fff}
+#stats{background:rgba(0,0,0,.18);font-weight:700}
+/* spodní tab bar */
+nav#tabbar{position:fixed;top:auto;bottom:0;left:0;right:0;z-index:50;background:var(--bg2);border-top:2px solid var(--line);display:flex;padding:8px 6px calc(8px + env(safe-area-inset-bottom));overflow-x:visible}
+nav#tabbar button{flex:1;min-width:0;border:none;background:transparent;border-radius:14px;padding:7px 2px;font-size:20px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px;color:var(--muted);font-weight:700}
+nav#tabbar button span{font-size:10.5px}
+nav#tabbar button.active{color:var(--blue);background:rgba(28,176,246,.13)}
+main{padding-bottom:150px}
+/* chunky tlačítka */
+button.big{border-radius:15px;border:2px solid var(--line);border-bottom-width:5px;font-weight:800;letter-spacing:.2px;transition:transform .06s,border-bottom-width .06s,filter .15s}
+button.big:active{transform:translateY(3px);border-bottom-width:2px}
+.primary{background:var(--blue)!important;border-color:var(--blue-d)!important;color:#fff!important}
+.good{background:var(--green)!important;border-color:var(--green-d)!important}
+.audio{background:var(--red)!important;border-color:var(--red-d)!important}
+.ghost{background:var(--card);border-color:var(--line)!important;color:var(--ink)!important}
+.warn{background:var(--card);border-color:var(--line)!important;color:var(--ink)!important}
+/* karty a volby */
+.card{border:2px solid var(--line);box-shadow:var(--shadow);background:var(--card)}
+.hanzi{font-weight:800}
+.cat{font-weight:700;text-transform:uppercase;letter-spacing:1px}
+.pick,.opt,.tok{border-width:2.5px;font-weight:700}
+.pick:active,.opt:active,.tok:active{transform:scale(.96)}
+.pick.ok{background:#e7f7ee!important;border-color:var(--green)!important}
+html[data-theme="dark"] .pick.ok{background:rgba(122,224,0,.15)!important}
+.opt.ok{background:#e7f7ee!important;border-color:var(--green)!important}
+html[data-theme="dark"] .opt.ok{background:rgba(122,224,0,.15)!important}
+.pick.bad,.opt.bad{background:#fdecea!important}
+html[data-theme="dark"] .pick.bad,html[data-theme="dark"] .opt.bad{background:rgba(255,75,75,.15)!important}
+.progress{height:14px;background:var(--line);border-radius:99px}
+.progress i{background:linear-gradient(90deg,var(--green),#8ee000);border-radius:99px;transition:width .4s cubic-bezier(.34,1.56,.64,1)}
+select,.search{background:var(--card);color:var(--ink);border:2px solid var(--line);font-weight:600}
+.box{background:var(--card)}
+footer{position:static;border-top:2px solid var(--line);background:var(--bg2);border-radius:18px 18px 0 0;margin-top:18px}
+html[data-theme="dark"] .pick,html[data-theme="dark"] .opt,html[data-theme="dark"] .tok{background:var(--card);color:var(--ink)}
+html[data-theme="dark"] .tokens{background:var(--bg2);border-color:var(--line)}
+html[data-theme="dark"] code{background:#2c3e46}
+/* tónové barvy pinyinu */
+.t1{color:#ff4b4b;font-weight:800}.t2{color:#ff9600;font-weight:800}.t3{color:#2ea36b;font-weight:800}.t4{color:#1cb0f6;font-weight:800}.t0{color:var(--muted);font-weight:800}
+/* domů */
+.goal-wrap{display:flex;align-items:center;gap:16px;justify-content:center;padding:6px 0}
+.ring{width:110px;height:110px;transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:var(--line);stroke-width:12}
+.ring-fg{fill:none;stroke:var(--green);stroke-width:12;stroke-linecap:round;stroke-dasharray:326.7;stroke-dashoffset:326.7;transition:stroke-dashoffset .6s cubic-bezier(.34,1.56,.64,1)}
+.goal-txt{display:flex;flex-direction:column;align-items:flex-start}
+.goal-txt b{font-size:30px;font-family:var(--display)}
+.goal-txt span,.streak-big span{font-size:12.5px;color:var(--muted)}
+.streak-big{font-size:30px;display:flex;flex-direction:column;align-items:center;font-family:var(--display)}
+.quick{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.qbtn{border:2px solid var(--line);border-bottom-width:5px;border-radius:16px;background:var(--card);padding:16px 8px;cursor:pointer;display:flex;flex-direction:column;gap:2px;font-size:26px;color:var(--ink)}
+.qbtn:active{transform:translateY(3px);border-bottom-width:2px}
+.qbtn b{font-size:16px}.qbtn span{font-size:12px;color:var(--muted);font-family:-apple-system,sans-serif}
+.qbtn.blue{background:rgba(28,176,246,.12);border-color:var(--blue)}
+.qbtn.green{background:rgba(88,204,2,.12);border-color:var(--green)}
+.qbtn.yellow{background:rgba(255,184,0,.13);border-color:var(--yellow)}
+.qbtn.purple{background:rgba(206,130,255,.14);border-color:var(--purple)}
+.banner{background:#fff4d6;border:2px solid var(--yellow);color:#7a5200;border-radius:14px;padding:12px 14px;font-size:14px;font-weight:600;margin-bottom:12px}
+html[data-theme="dark"] .banner{background:rgba(255,184,0,.12);color:var(--yellow)}
+/* více menu */
+#moreMenu{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.45);display:none;align-items:flex-end}
+#moreMenu.open{display:flex}
+#moreMenu .sheet{background:var(--bg2);border-radius:24px 24px 0 0;width:100%;max-width:720px;margin:0 auto;padding:14px 14px calc(16px + env(safe-area-inset-bottom));display:grid;gap:8px;animation:sheetup .25s cubic-bezier(.34,1.4,.64,1)}
+@keyframes sheetup{from{transform:translateY(60px);opacity:0}}
+#moreMenu .sheet button{border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:14px;padding:14px;font-size:16px;font-weight:700;cursor:pointer;text-align:left;font-family:var(--display)}
+/* nastavení */
+.set-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 2px;border-bottom:1px solid var(--line);font-weight:600}
+.set-row select{width:auto;margin-top:0}
+.set-row input[type=checkbox]{width:24px;height:24px;accent-color:var(--green)}
+.set-row .big{width:auto;padding:10px 16px;font-size:14px}
+/* toast + confetti */
+#toast{position:fixed;top:14px;left:50%;transform:translateX(-50%) translateY(-80px);background:var(--ink);color:var(--bg);font-weight:800;padding:12px 20px;border-radius:99px;z-index:99;transition:transform .3s cubic-bezier(.34,1.56,.64,1);font-family:var(--display);box-shadow:var(--shadow)}
+#toast.show{transform:translateX(-50%) translateY(0)}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:98}
+/* animace */
+@keyframes pop{0%{transform:scale(.85);opacity:0}60%{transform:scale(1.04)}100%{transform:scale(1);opacity:1}}
+@keyframes floatup{from{transform:translateY(0);opacity:1}to{transform:translateY(-46px);opacity:0}}
+section.active .card{animation:pop .3s ease}
+.pick.ok,.opt.ok{animation:pop .25s ease}
+html[data-motion="calm"] *,html[data-motion="calm"] *::before,html[data-motion="calm"] *::after{animation-duration:.001s!important;transition-duration:.001s!important}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.001s!important;transition-duration:.001s!important}}
+@media(max-width:480px){.hanzi{font-size:52px}.quick{grid-template-columns:1fr 1fr}}
+</style>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#ff4b4b">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Hanyu">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&display=swap" rel="stylesheet">
+<script>try{var t=localStorage.getItem('hanyu_theme')||'system';document.documentElement.dataset.theme=(t==='system')?((matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light'):t;}catch(e){document.documentElement.dataset.theme='light';}</script>
 </head>
 <body>
 <header>
-<h1>🇨🇳 Hanyu Trainer — HSK 1</h1>
-<p>Vidíš • Slyšíš • Spojuješ • Skládáš věty. Bez mluvení. Česky.</p>
+<div class="topbar"><h1>🇨🇳 Hanyu Trainer</h1><button id="themeBtn" class="iconbtn" title="Vzhled">🌙</button></div>
+<p>Vidíš • Slyšíš • Spojuješ • Skládáš věty. Česky, hravě.</p>
 <div id="stats">Umím 0 / 171</div>
 </header>
-<nav>
-<button data-tab="cards" class="active">🃏 Kartičky</button>
+<nav id="tabbar">
+<button data-tab="home" class="active">🏠<span>Domů</span></button>
+<button data-tab="cards">🃏<span>Karty</span></button>
+<button data-tab="mix">⚡<span>Mix</span></button>
+<button data-tab="fix">🩹<span>Opravna</span></button>
+<button id="moreBtn">⋯<span>Více</span></button>
+</nav>
+<div id="moreMenu"><div class="sheet">
 <button data-tab="match">🧩 Spojovačka</button>
 <button data-tab="listen">🔊 Poslech</button>
 <button data-tab="sent">🧱 Věty</button>
 <button data-tab="speak">🎤 Výslovnost</button>
 <button data-tab="anki">📥 Anki</button>
-</nav>
+<button data-tab="set">⚙️ Nastavení</button>
+<button id="moreClose">✕ Zavřít</button>
+</div></div>
 <main>
+<!-- DOMŮ -->
+<section id="tab-home" class="active">
+<div id="remindBanner" class="banner" style="display:none"></div>
+<div class="card">
+<div class="goal-wrap">
+<svg class="ring" viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" class="ring-bg"/><circle id="goalArc" cx="60" cy="60" r="52" class="ring-fg"/></svg>
+<div class="goal-txt"><b id="goalPct">0 %</b><span>denní cíl 50 XP</span></div>
+<div class="streak-big">🔥<b id="streakN">0</b><span>dní v řadě</span></div>
+</div>
+<div class="hint" id="goalHint"></div>
+</div>
+<div class="quick">
+<button class="qbtn blue" data-go="mix">⚡<b>Rychlý mix</b><span>5 minut všeho</span></button>
+<button class="qbtn green" data-go="fix">🩹<b>Opravna</b><span id="fixCount">0 slabých slov</span></button>
+<button class="qbtn yellow" data-go="cards">🃏<b>Kartičky</b><span>klasika</span></button>
+<button class="qbtn purple" data-go="speak">🎤<b>Výslovnost</b><span>beta</span></button>
+</div>
+</section>
+
+<!-- MIX -->
+<section id="tab-mix">
+<div class="box"><h3>⚡ Rychlý mix — 12 kol všeho</h3>
+<div class="row"><select id="d-level"><option value="L1">Úroveň 1 — 60 slov</option><option value="L2">Úroveň 2 — 120 slov</option><option value="L3" selected>Úroveň 3 — HSK 1</option></select><button class="big primary" id="d-start">Start</button></div></div>
+<div class="card" id="d-play" style="display:none">
+<div class="progress"><i id="d-bar"></i></div>
+<div class="hint" id="d-pos"></div>
+<div id="d-body"></div>
+<div class="feedback" id="d-fb"></div>
+</div>
+<div class="card" id="d-done" style="display:none">
+<div class="hanzi" style="font-size:52px">🏆</div>
+<div class="czech" id="d-sum"></div>
+<div class="hint" id="d-sum2"></div>
+<div class="row"><button class="big good" id="d-again">🔁 Znovu</button><button class="big ghost" id="d-home">Domů</button></div>
+</div>
+</section>
+
+<!-- OPRAVNA -->
+<section id="tab-fix">
+<div class="box"><h3>🩹 Opravna — jen slova, kde chybuješ</h3>
+<p id="o-info"></p>
+<div class="row"><select id="o-level"><option value="L1">Úroveň 1 — 60 slov</option><option value="L2">Úroveň 2 — 120 slov</option><option value="L3" selected>Úroveň 3 — HSK 1</option></select><button class="big primary" id="o-start">Start</button></div></div>
+<div class="card" id="o-play" style="display:none">
+<div class="progress"><i id="o-bar"></i></div>
+<div class="hint" id="o-pos"></div>
+<div id="o-body"></div>
+<div class="feedback" id="o-fb"></div>
+</div>
+<div class="card" id="o-done" style="display:none">
+<div class="hanzi" style="font-size:52px">🩹</div>
+<div class="czech" id="o-sum"></div>
+<div class="hint" id="o-sum2"></div>
+<div class="row"><button class="big good" id="o-again">🔁 Znovu</button><button class="big ghost" id="o-home">Domů</button></div>
+</div>
+</section>
+
+<!-- NASTAVENÍ -->
+<section id="tab-set">
+<div class="box"><h3>⚙️ Nastavení</h3>
+<div class="set-row"><span>🎨 Vzhled</span><select id="s-theme"><option value="system">Systém</option><option value="light">Světlý</option><option value="dark">Tmavý</option></select></div>
+<div class="set-row"><span>🎞 Animace</span><select id="s-motion"><option value="auto">Automaticky</option><option value="full">Plné</option><option value="calm">Klidné</option></select></div>
+<div class="set-row"><span>🐢 Pomalý zvuk (0.7×)</span><input type="checkbox" id="s-slow"></div>
+<div class="set-row"><span>📳 Vibrace (Android)</span><input type="checkbox" id="s-hap" checked></div>
+<div class="set-row"><span>🔔 Připomínka streaku</span><button class="big ghost" id="s-rem">Zapnout</button></div>
+<div class="hint">Web neumí budík bez serveru — streak hlídám bannerem + odznakem na ikonce; systémovou notifikaci pošlu, když appku otevřeš a streak hoří. (iPhone: přidej na plochu.) Haptika funguje jen na Androidu — iPhone na webu nevibruje.</div>
+<div class="set-row"><span>🗑 Vymazat postup</span><button class="big ghost" id="s-reset">Smazat</button></div>
+</div>
+</section>
+
 <!-- KARTIČKY -->
-<section id="tab-cards" class="active">
+<section id="tab-cards">
 <div class="card">
 <div class="cat" id="c-cat"></div>
 <div class="hanzi" id="c-hz">我</div>
@@ -220,7 +411,7 @@ function tts(t){if(!('speechSynthesis' in window)){alert('Prohlížeč neumí hl
 // Přehrávání: nejdřív nahraný neuronový hlas (audio/*.mp3), když chybí → hlas zařízení.
 let AU=null;
 function speak(t,f){try{if(AU)AU.pause();}catch(e){} if('speechSynthesis' in window)try{speechSynthesis.cancel();}catch(e){}
-if(f){let fell=false;try{AU=new Audio(f);AU.onerror=()=>{if(!fell){fell=true;tts(t);}};const p=AU.play();if(p&&p.catch)p.catch(()=>{if(!fell){fell=true;tts(t);}});return;}catch(e){}}tts(t);}
+if(f){let fell=false;try{AU=new Audio(f);try{if(localStorage.getItem('hanyu_slow')==='1')AU.playbackRate=0.7;}catch(se){}AU.onerror=()=>{if(!fell){fell=true;tts(t);}};const p=AU.play();if(p&&p.catch)p.catch(()=>{if(!fell){fell=true;tts(t);}});return;}catch(e){}}tts(t);}
 function wfile(id){return 'audio/w'+id+'.mp3';}
 function wfileHz(hz){const w=WORDS.find(x=>x.hz===hz);return w?wfile(w.id):null;}
 // ---------- stav ----------
@@ -247,7 +438,13 @@ function poolFor(catSel,lvlSel){const c=catSel.value,l=lvlSel.value;return lvlPo
 function fillCats(sel){[...new Set(WORDS.map(w=>w.cat))].forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;sel.appendChild(o);});}
 function distractors(cur,pool,n){const same=pool.filter(w=>w.id!==cur.id&&w.cat===cur.cat),rest=pool.filter(w=>w.id!==cur.id&&w.cat!==cur.cat);shuffle(same);shuffle(rest);return [...same,...rest].slice(0,n);}
 // tabs
-document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));document.getElementById('tab-'+b.dataset.tab).classList.add('active');});
+function goTab(name){document.querySelectorAll('#tabbar button[data-tab]').forEach(x=>x.classList.toggle('active',x.dataset.tab===name));document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));const el=document.getElementById('tab-'+name);if(el)el.classList.add('active');document.getElementById('moreMenu').classList.remove('open');window.scrollTo(0,0);}
+document.querySelectorAll('#tabbar button[data-tab]').forEach(b=>b.onclick=()=>goTab(b.dataset.tab));
+document.querySelectorAll('#moreMenu .sheet button[data-tab]').forEach(b=>b.onclick=()=>goTab(b.dataset.tab));
+document.getElementById('moreBtn').onclick=()=>document.getElementById('moreMenu').classList.add('open');
+document.getElementById('moreClose').onclick=()=>document.getElementById('moreMenu').classList.remove('open');
+document.getElementById('moreMenu').onclick=e=>{if(e.target.id==='moreMenu')e.target.classList.remove('open');};
+document.querySelectorAll('.qbtn[data-go]').forEach(b=>b.onclick=()=>{goTab(b.dataset.go);if(b.dataset.go==='mix')startDrill('d');if(b.dataset.go==='fix')startDrill('o');});
 // ---------- kartičky ----------
 let deck=[...WORDS],ci=0,revealed=false;
 const filt=document.getElementById('c-filter');
@@ -256,7 +453,7 @@ function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random
 function refill(){const onlyNew=document.getElementById('c-onlynew').checked;const weak=document.getElementById('c-weak').checked;let p=poolFor(filt,document.getElementById('c-level'));if(weak){const w=p.filter(x=>ERR[x.id]);if(w.length)p=w;}deck=p.filter(w=>!onlyNew||!known.has(w.id));if(!deck.length)deck=[...p];deck=wshuffle(deck);ci=0;}
 function showCard(){const w=deck[ci%deck.length];revealed=false;document.getElementById('c-hz').textContent=w.hz;document.getElementById('c-cat').textContent='#'+w.id+' • '+w.cat;document.getElementById('c-py').textContent='?';document.getElementById('c-cz').textContent='?';document.getElementById('c-hint').textContent=known.has(w.id)?'✓ tohle už umíš':'';
 document.getElementById('c-speak').onclick=()=>speak(w.hz,wfile(w.id));}
-function reveal(){const w=deck[ci%deck.length];revealed=true;document.getElementById('c-py').textContent=w.py;document.getElementById('c-cz').textContent=w.cz;}
+function reveal(){const w=deck[ci%deck.length];revealed=true;document.getElementById('c-py').innerHTML=tone(w.py);document.getElementById('c-cz').textContent=w.cz;}
 document.getElementById('c-show').onclick=reveal;
 document.getElementById('c-speak').onclick=()=>{const w=deck[ci%deck.length];speak(w.hz,wfile(w.id));};
 document.getElementById('c-yes').onclick=()=>{const w=deck[ci%deck.length];known.add(w.id);recOk(w.id);addXP(10);save();ci++;if(ci>=deck.length)refill();showCard();};
@@ -276,7 +473,7 @@ document.getElementById('m-level').onchange=newMatch;document.getElementById('m-
 let lCur=null,lRev=false;
 fillCats(document.getElementById('l-filter'));
 function newListen(){document.getElementById('l-fb').textContent='';document.getElementById('l-fb').className='feedback';const lp=poolFor(document.getElementById('l-filter'),document.getElementById('l-level'));lCur=wpick(lp.length?lp:WORDS,1)[0];const opts=shuffle([lCur,...distractors(lCur,lp.length>=4?lp:WORDS,3)]);const box=document.getElementById('l-opts');box.innerHTML='';
-if(!lRev){document.getElementById('l-py').textContent='? (poslouchej a vyber česky)';opts.forEach(w=>{const b=document.createElement('button');b.className='opt';b.textContent=w.cz;b.onclick=()=>{if(w.id===lCur.id){b.classList.add('ok');document.getElementById('l-fb').textContent=`✓ Ano! ${lCur.hz} (${lCur.py}) = ${lCur.cz}`;document.getElementById('l-fb').className='feedback ok';document.getElementById('l-py').textContent=lCur.hz+' • '+lCur.py;known.add(lCur.id);save();recOk(lCur.id);addXP(10);}else{b.classList.add('bad');recErr(lCur.id);document.getElementById('l-fb').textContent='✕ Ne — poslechni znovu a zkus jinou.';document.getElementById('l-fb').className='feedback no';}};box.appendChild(b);});speak(lCur.hz,wfile(lCur.id));}
+if(!lRev){document.getElementById('l-py').textContent='? (poslouchej a vyber česky)';opts.forEach(w=>{const b=document.createElement('button');b.className='opt';b.textContent=w.cz;b.onclick=()=>{if(w.id===lCur.id){b.classList.add('ok');document.getElementById('l-fb').textContent=`✓ Ano! ${lCur.hz} (${lCur.py}) = ${lCur.cz}`;document.getElementById('l-fb').className='feedback ok';document.getElementById('l-py').innerHTML=lCur.hz+' • '+tone(lCur.py);known.add(lCur.id);save();recOk(lCur.id);addXP(10);}else{b.classList.add('bad');recErr(lCur.id);document.getElementById('l-fb').textContent='✕ Ne — poslechni znovu a zkus jinou.';document.getElementById('l-fb').className='feedback no';}};box.appendChild(b);});speak(lCur.hz,wfile(lCur.id));}
 else{document.getElementById('l-py').textContent=`${lCur.cz} — vyber čínsky`;opts.forEach(w=>{const b=document.createElement('button');b.className='opt';b.innerHTML=`${w.hz} <span style="color:#999">${w.py}</span>`;b.onclick=()=>{if(w.id===lCur.id){b.classList.add('ok');document.getElementById('l-fb').textContent=`✓ Ano! ${lCur.hz} (${lCur.py}) = ${lCur.cz}`;document.getElementById('l-fb').className='feedback ok';known.add(lCur.id);save();recOk(lCur.id);addXP(10);speak(lCur.hz,wfile(lCur.id));}else{b.classList.add('bad');recErr(lCur.id);document.getElementById('l-fb').textContent=`✕ Ne — správně je ${lCur.hz} (${lCur.py}).`;document.getElementById('l-fb').className='feedback no';}};box.appendChild(b);});}}
 document.getElementById('l-play').onclick=()=>lCur&&speak(lCur.hz,wfile(lCur.id));
 document.getElementById('l-dir').onclick=e=>{lRev=!lRev;e.target.textContent=lRev?'Směr: 🇨🇿 čeština → čínština':'Směr: 🔊 čínština → čeština';newListen();};
@@ -300,8 +497,8 @@ document.getElementById('q').oninput=e=>drawAll(e.target.value.trim());
 let pTarget={kind:'word',w:null,s:null,sidx:0},pPipe=null,pRec=null,pChunks=[],pTimer=null;
 function pPool(){return lvlPool(WORDS,document.getElementById('p-level').value);}
 function newPron(){const t=document.getElementById('p-type').value;document.getElementById('p-fb').textContent='';document.getElementById('p-fb').className='feedback';document.getElementById('p-heard').textContent='';
-if(t==='word'){const w=wpick(pPool(),1)[0];pTarget={kind:'word',w,s:null,sidx:0};document.getElementById('p-hz').textContent=w.hz;document.getElementById('p-py').textContent=w.py;document.getElementById('p-cz').textContent=w.cz;}
-else{const i=Math.floor(Math.random()*SENTENCES.length),s=SENTENCES[i];pTarget={kind:'sent',w:null,s,sidx:i};document.getElementById('p-hz').textContent=s.full;document.getElementById('p-py').textContent=s.py;document.getElementById('p-cz').textContent=s.cz;}}
+if(t==='word'){const w=wpick(pPool(),1)[0];pTarget={kind:'word',w,s:null,sidx:0};document.getElementById('p-hz').textContent=w.hz;document.getElementById('p-py').innerHTML=tone(w.py);document.getElementById('p-cz').textContent=w.cz;}
+else{const i=Math.floor(Math.random()*SENTENCES.length),s=SENTENCES[i];pTarget={kind:'sent',w:null,s,sidx:i};document.getElementById('p-hz').textContent=s.full;document.getElementById('p-py').innerHTML=tone(s.py);document.getElementById('p-cz').textContent=s.cz;}}
 function pExpected(){return pTarget.kind==='word'?(pTarget.w?pTarget.w.hz:''):pTarget.s.full;}
 function pStatus(t){document.getElementById('p-status').textContent=t;}
 async function pEnsure(){if(pPipe)return pPipe;pStatus('Stahuju AI model (~75 MB, jen poprvé)…');const {pipeline}=await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1');pPipe=await pipeline('automatic-speech-recognition','Xenova/whisper-tiny',{progress_callback:(p)=>{if(p&&p.status==='progress'&&p.total)pStatus(`Stahuju model ${Math.round(p.loaded/p.total*100)} %…`);}});pStatus('Model připraven. Příště už i offline (je v cache).');return pPipe;}
@@ -334,8 +531,118 @@ pRec.start();btn.textContent='■ Stop';
 pTimer=setTimeout(()=>{if(pRec)try{pRec.stop();}catch(err){}},6000);
 }catch(err){console.error(err);pStatus('Mikrofon odepřen nebo nedostupný. Povol přístup k mikrofonu a zkus znovu.');pRec=null;btn.textContent='● Nahrát (max 6 s)';}
 };
+// ---------- v3: téma, pohyb, haptika, tóny, denní cíl, drill ----------
+function applyTheme(v){try{localStorage.setItem('hanyu_theme',v);}catch(e){}const root=document.documentElement;
+if(v==='system'){try{root.dataset.theme=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}catch(e){root.dataset.theme='light';}}
+else root.dataset.theme=v;
+const tb=document.getElementById('themeBtn');if(tb)tb.textContent=root.dataset.theme==='dark'?'☀️':'🌙';
+const mc=document.querySelector('meta[name="theme-color"]');if(mc)mc.setAttribute('content',root.dataset.theme==='dark'?'#131f24':'#ff4b4b');
+const st=document.getElementById('s-theme');if(st)st.value=v;}
+try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{try{if((localStorage.getItem('hanyu_theme')||'system')==='system')applyTheme('system');}catch(e){}});}catch(e){}
+function decideMotion(){let m='auto';try{m=localStorage.getItem('hanyu_motion')||'auto';}catch(e){}
+if(m==='auto'){let slow=false,weak=false,prm=false;try{const c=navigator.connection;slow=!!(c&&(c.saveData||/2g/.test(c.effectiveType||'')));}catch(e){}try{weak=(navigator.hardwareConcurrency||8)<=3||(navigator.deviceMemory||8)<=3;}catch(e){}try{prm=matchMedia('(prefers-reduced-motion: reduce)').matches;}catch(e){}
+document.documentElement.dataset.motion=(slow||weak||prm)?'calm':'full';}
+else document.documentElement.dataset.motion=m;}
+function motionFull(){return document.documentElement.dataset.motion!=='calm';}
+function buzz(p){try{if(localStorage.getItem('hanyu_hap')==='0')return;if(navigator.vibrate)navigator.vibrate(p);}catch(e){}}
+let toastT=null;function toast(t){let el=document.getElementById('toast');if(!el){el=document.createElement('div');el.id='toast';document.body.appendChild(el);}el.textContent=t;el.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('show'),2200);}
+function burst(){if(!motionFull())return;try{let c=document.getElementById('confetti');if(!c){c=document.createElement('canvas');c.id='confetti';document.body.appendChild(c);}c.width=innerWidth;c.height=innerHeight;const x=c.getContext('2d');const cols=['#1cb0f6','#58cc02','#ff4b4b','#ffc800','#ce82ff'];const ps=[];for(let i=0;i<90;i++)ps.push({x:innerWidth/2+(Math.random()-.5)*120,y:innerHeight*0.35,vx:(Math.random()-.5)*11,vy:Math.random()*-9-3,s:Math.random()*7+4,c:cols[i%5],r:Math.random()*Math.PI,vr:(Math.random()-.5)*.3,l:1});
+let f=0;(function tick(){x.clearRect(0,0,c.width,c.height);f++;ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.35;p.r+=p.vr;p.l-=.012;x.save();x.translate(p.x,p.y);x.rotate(p.r);x.globalAlpha=Math.max(p.l,0);x.fillStyle=p.c;x.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6);x.restore();});if(f<110)requestAnimationFrame(tick);else x.clearRect(0,0,c.width,c.height);})();}catch(e){}}
+function tone(py){return String(py).split(' ').map(s=>{const t=/[āēīōūǖĀĒĪŌŪǕ]/.test(s)?1:/[áéíóúǘÁÉÍÓÚǗ]/.test(s)?2:/[ǎěǐǒǔǚǍĚǏǑǓǙ]/.test(s)?3:/[àèìòùǜÀÈÌÒÙǛ]/.test(s)?4:0;return `<span class="t${t}">${s}</span>`;}).join(' ');}
+const DGOAL=50;
+function dailyGet(){try{const d=JSON.parse(localStorage.getItem('hanyu_daily')||'{}');return(d.date===todayStr())?(d.xp||0):0;}catch(e){return 0;}}
+function dailyAdd(n){try{localStorage.setItem('hanyu_daily',JSON.stringify({date:todayStr(),xp:dailyGet()+n}));}catch(e){}updHome();updateBadge();}
+const _addXP=addXP;addXP=function(n){const b=lvl();_addXP(n);dailyAdd(n);try{if(lvl()>b){toast('🎉 Level '+lvl()+'!');burst();buzz([30,50,30,50,100]);}}catch(e){}};
+function weakList(){try{return WORDS.filter(w=>ERR[w.id]);}catch(e){return [];}}
+function updateBadge(){try{if(!('setAppBadge' in navigator))return;if(dailyGet()>=DGOAL){navigator.clearAppBadge();}else if(STREAK.n>0||XP>0){navigator.setAppBadge(DGOAL-dailyGet());}}catch(e){}}
+function notifyStreak(){try{if(localStorage.getItem('hanyu_remind')!=='1')return;if(!('Notification' in window)||Notification.permission!=='granted')return;new Notification('🔥 Hanyu streak hoří!',{body:'Dej si dnes aspoň rychlý mix, ať nepřijdeš o streak.'});}catch(e){}}
+function updHome(){const xp=dailyGet(),pct=Math.min(100,Math.round(xp/DGOAL*100));const arc=document.getElementById('goalArc');if(arc)arc.style.strokeDashoffset=(326.7*(1-pct/100)).toFixed(1);
+const gp=document.getElementById('goalPct');if(gp)gp.textContent=pct+' %';
+const gh=document.getElementById('goalHint');if(gh)gh.textContent=xp>=DGOAL?'✅ Denní cíl splněn. Streak je v bezpečí.':`Zbývá ${DGOAL-xp} XP do cíle (${Math.max(0,Math.ceil((DGOAL-xp)/10))}× rychlý mix cca).`;
+const sn=document.getElementById('streakN');if(sn)sn.textContent=STREAK.n;
+const wl=weakList().length;const fc=document.getElementById('fixCount');if(fc)fc.textContent=wl?wl+' slabých slov':(known.size?'čisto, paráda ✨':'zatím žádná data');
+const oi=document.getElementById('o-info');if(oi)oi.textContent=wl?`Máš ${wl} slabých slov. Dáme jim zabrat — 12 kol.`:'Zatím žádná slabá slova. Trénuj a chyby se tu objeví samy.';
+const b=document.getElementById('remindBanner');
+if(b){if(STREAK.n>0&&STREAK.last!==todayStr()){b.style.display='block';b.textContent=`🔥 Pozor — streak ${STREAK.n} ${STREAK.n===1?'den':(STREAK.n<5?'dny':'dní')}! Dej si dnes aspoň rychlý mix, ať o něj nepřijdeš.`;notifyStreak();}
+else if(!known.size&&!XP){b.style.display='block';b.textContent='👋 Vítej! Začni Rychlým mixem — 12 kol, 5 minut.';}
+else b.style.display='none';}}
+// drill engine (mix + opravna)
+let DR=null;
+function drillPool(p){const lv=document.getElementById(p==='d'?'d-level':'o-level').value;
+if(p==='o'){const w=lvlPool(weakList().length?weakList():WORDS,lv);return w.length?w:lvlPool(WORDS,lv);}
+return lvlPool(WORDS,lv);}
+function dEl(p,n){return document.getElementById(p+'-'+n);}
+function startDrill(p){const pool=drillPool(p);DR={p,queue:[],i:0,ok:0,xp0:XP};
+const types=['listen','cards','sent','match'];
+for(let i=0;i<12;i++){const t=types[i%4];
+if(t==='match'){const ws=wpick(pool,4);if(ws.length<4)continue;DR.queue.push({t,ws});}
+else if(t==='sent'){DR.queue.push({t,s:SENTENCES[Math.floor(Math.random()*SENTENCES.length)]});}
+else{const ws=wpick(pool,1);if(!ws.length)continue;DR.queue.push({t,w:ws[0]});}}
+if(!DR.queue.length){dEl(p,'fb');toast('Prázdný balík slov');return;}
+document.getElementById(p+'-done').style.display='none';document.getElementById(p+'-play').style.display='block';
+renderRound();}
+function renderRound(){const p=DR.p;if(DR.i>=DR.queue.length){finishDrill();return;}
+dEl(p,'bar').style.width=(DR.i/DR.queue.length*100)+'%';dEl(p,'pos').textContent=`Kolo ${DR.i+1} / ${DR.queue.length}`;dEl(p,'fb').textContent='';dEl(p,'fb').className='feedback';
+const r=DR.queue[DR.i],B=dEl(p,'body');B.innerHTML='';
+if(r.t==='listen'){B.innerHTML=`<button class="big audio" id="${p}-pl" style="width:100%">🔊 Přehrát</button><div class="opts" id="${p}-oo"></div>`;
+const opts=shuffle([r.w,...distractors(r.w,drillPool(p),3)]);const box=document.getElementById(p+'-oo');
+opts.forEach(w=>{const b=document.createElement('button');b.className='opt';b.textContent=w.cz;b.onclick=()=>{const good=w.id===r.w.id;if(good)b.classList.add('ok');else b.classList.add('bad');grade(good,r);};box.appendChild(b);});
+document.getElementById(p+'-pl').onclick=()=>speak(r.w.hz,wfile(r.w.id));speak(r.w.hz,wfile(r.w.id));}
+else if(r.t==='cards'){B.innerHTML=`<div class="hanzi" style="font-size:56px">${r.w.hz}</div><div class="pinyin" id="${p}-py">?</div><div class="czech" id="${p}-cz">?</div><div class="row"><button class="big audio" id="${p}-sp">🔊</button><button class="big ghost" id="${p}-sh">👁 Ukázat</button></div><div class="row"><button class="big warn" id="${p}-no">✕ Neumím</button><button class="big good" id="${p}-yes">✓ Umím</button></div>`;
+let rev=false;const show=()=>{rev=true;document.getElementById(p+'-py').innerHTML=tone(r.w.py);document.getElementById(p+'-cz').textContent=r.w.cz;};
+document.getElementById(p+'-sp').onclick=()=>speak(r.w.hz,wfile(r.w.id));
+document.getElementById(p+'-sh').onclick=show;
+document.getElementById(p+'-yes').onclick=()=>{if(!rev)show();grade(true,r);};
+document.getElementById(p+'-no').onclick=()=>{if(!rev)show();grade(false,r);};
+speak(r.w.hz,wfile(r.w.id));}
+else if(r.t==='sent'){const s=r.s,si=SENTENCES.indexOf(s);B.innerHTML=`<div class="czech" style="font-size:19px">${s.cz}</div><div class="hint">${s.py}</div><div class="tokens answer" id="${p}-an"></div><div class="tokens" id="${p}-po"></div><div class="row"><button class="big audio" id="${p}-spl">🔊</button><button class="big primary" id="${p}-ch">Zkontrolovat</button></div>`;
+let built=[];const an=document.getElementById(p+'-an'),po=document.getElementById(p+'-po');
+const draw=()=>{an.innerHTML='';built.forEach((t,i)=>{const b=document.createElement('button');b.className='tok';b.textContent=t;b.onclick=()=>{built.splice(i,1);const f=[...po.children].find(x=>x.textContent===t&&x.classList.contains('used'));if(f)f.classList.remove('used');draw();};an.appendChild(b);});};
+shuffle([...s.tokens]).forEach(t=>{const b=document.createElement('button');b.className='tok';b.textContent=t;b.onclick=()=>{built.push(t);b.classList.add('used');draw();speak(t,wfileHz(t));};po.appendChild(b);});draw();
+document.getElementById(p+'-spl').onclick=()=>speak(s.full,'audio/s'+si+'.mp3');
+document.getElementById(p+'-ch').onclick=()=>{grade(built.join('')===s.tokens.join(''),r);};
+speak(s.full,'audio/s'+si+'.mp3');}
+else if(r.t==='match'){B.innerHTML=`<div class="grid2"><div id="${p}-ml" style="display:grid;gap:10px"></div><div id="${p}-mr" style="display:grid;gap:10px"></div></div>`;
+const L=document.getElementById(p+'-ml'),R=document.getElementById(p+'-mr');let sel=null,done=0,bad=false;
+r.ws.forEach(w=>{const b=document.createElement('button');b.className='pick';b.textContent=w.hz;b.onclick=()=>{[...L.children].forEach(x=>x.classList.remove('sel'));b.classList.add('sel');sel=w;speak(w.hz,wfile(w.id));};L.appendChild(b);});
+shuffle([...r.ws]).forEach(w=>{const b=document.createElement('button');b.className='pick';b.textContent=w.cz;b.onclick=()=>{if(!sel)return;if(sel.id===w.id){b.classList.add('ok');b.style.pointerEvents='none';const lb=[...L.children].find(x=>x.textContent===sel.hz);if(lb){lb.classList.add('ok');lb.style.pointerEvents='none';}sel=null;done++;if(done===4)grade(!bad,r);}else{b.classList.add('bad');bad=true;setTimeout(()=>b.classList.remove('bad'),600);}};R.appendChild(b);});}}
+function grade(ok,r){const p=DR.p;const fb=dEl(p,'fb');
+const ids=r.w?[r.w.id]:(r.ws?r.ws.map(w=>w.id):(r.s?r.s.tokens.map(t=>{const w=WORDS.find(x=>x.hz===t);return w?w.id:null;}).filter(Boolean):[]));
+if(ok){DR.ok++;fb.textContent='✓ Správně!';fb.className='feedback ok';ids.forEach(recOk);addXP(r.t==='sent'?15:10);buzz(20);setTimeout(nextRound,650);}
+else{fb.textContent='✕ Nevadí — jedeme dál.';fb.className='feedback no';ids.forEach(recErr);buzz([40,40,60]);setTimeout(nextRound,1100);}}
+function nextRound(){if(!DR)return;DR.i++;renderRound();}
+function finishDrill(){const p=DR.p;dEl(p,'bar').style.width='100%';document.getElementById(p+'-play').style.display='none';const d=document.getElementById(p+'-done');d.style.display='block';
+const gained=XP-DR.xp0,acc=DR.queue.length?Math.round(DR.ok/DR.queue.length*100):0;
+document.getElementById(p+'-sum').textContent=`${DR.ok} / ${DR.queue.length} správně • +${gained} XP`;
+document.getElementById(p+'-sum2').textContent=acc>=80?'Paráda! 🔥':acc>=50?'Dobrý trénink 💪':'Každý pokus se počítá 🌱';
+if(acc>=60){burst();buzz([30,50,30,50,100]);}updHome();}
+document.getElementById('d-start').onclick=()=>startDrill('d');
+document.getElementById('o-start').onclick=()=>startDrill('o');
+document.getElementById('d-again').onclick=()=>startDrill('d');
+document.getElementById('o-again').onclick=()=>startDrill('o');
+document.getElementById('d-home').onclick=()=>goTab('home');
+document.getElementById('o-home').onclick=()=>goTab('home');
+// klávesové zkratky (desktop)
+document.addEventListener('keydown',e=>{const tag=(e.target&&e.target.tagName)||'';if(/INPUT|SELECT|TEXTAREA/.test(tag))return;
+if(document.getElementById('tab-cards').classList.contains('active')){if(e.key==='ArrowRight')document.getElementById('c-next').click();else if(e.key===' '||e.key==='Enter'){e.preventDefault();if(!revealed)reveal();}else if(e.key==='1')document.getElementById('c-yes').click();else if(e.key==='2')document.getElementById('c-no').click();return;}
+if(document.getElementById('tab-listen').classList.contains('active')&&['1','2','3','4'].includes(e.key)){const o=document.getElementById('l-opts').children[+e.key-1];if(o)o.click();}});
+// nastavení + init v3
+function updRemLabel(){try{document.getElementById('s-rem').textContent=localStorage.getItem('hanyu_remind')==='1'?'Zapnuto ✓':'Zapnout';}catch(e){}}
+document.getElementById('themeBtn').onclick=()=>{applyTheme(document.documentElement.dataset.theme==='dark'?'light':'dark');};
+document.getElementById('s-theme').onchange=e=>applyTheme(e.target.value);
+document.getElementById('s-motion').onchange=e=>{try{localStorage.setItem('hanyu_motion',e.target.value);}catch(err){}decideMotion();toast('Animace: '+e.target.selectedOptions[0].text);};
+document.getElementById('s-slow').onchange=e=>{try{localStorage.setItem('hanyu_slow',e.target.checked?'1':'0');}catch(err){}};
+document.getElementById('s-hap').onchange=e=>{try{localStorage.setItem('hanyu_hap',e.target.checked?'1':'0');}catch(err){}buzz(20);};
+document.getElementById('s-rem').onclick=async()=>{try{if(!('Notification' in window)){toast('Prohlížeč neumí notifikace');return;}const r=await Notification.requestPermission();if(r==='granted'){try{localStorage.setItem('hanyu_remind','1');}catch(e){}updRemLabel();toast('Připomínky zapnuty 🔔');updateBadge();}else toast('Notifikace zamítnuty v systému');}catch(e){toast('Notifikace nejdou zapnout');}};
+document.getElementById('s-reset').onclick=()=>{if(confirm('Smazat celý postup (XP, umím, chyby, streak)?')){['hanyu_known','hanyu_xp','hanyu_err','hanyu_streak','hanyu_daily','hanyu_match'].forEach(k=>{try{localStorage.removeItem(k);}catch(e){}});location.reload();}};
+function initV3(){let th='system';try{th=localStorage.getItem('hanyu_theme')||'system';}catch(e){}applyTheme(th);
+decideMotion();try{document.getElementById('s-motion').value=localStorage.getItem('hanyu_motion')||'auto';}catch(e){}
+try{document.getElementById('s-slow').checked=localStorage.getItem('hanyu_slow')==='1';}catch(e){}
+try{document.getElementById('s-hap').checked=localStorage.getItem('hanyu_hap')!=='0';}catch(e){document.getElementById('s-hap').checked=true;}
+updRemLabel();updHome();updateBadge();
+if('serviceWorker' in navigator){window.addEventListener('load',()=>{try{navigator.serviceWorker.register('sw.js').catch(()=>{});}catch(e){}});}}
 // init
-refill();showCard();updStats();mDrawScore();newMatch();newListen();newSent();newPron();drawAll();
+refill();showCard();updStats();mDrawScore();newMatch();newListen();newSent();newPron();drawAll();initV3();
 </script>
 </body>
 </html>

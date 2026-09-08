@@ -1,0 +1,17 @@
+{
+  "name": "Hanyu Trainer — čínština HSK 1",
+  "short_name": "Hanyu",
+  "description": "Hravý trenér čínštiny HSK 1 česky: kartičky, mix, opravna, poslech, věty, výslovnost.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fff9f0",
+  "theme_color": "#ff4b4b",
+  "lang": "cs",
+  "icons": [
+    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png"},
+    {"src": "icons/icon-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}
