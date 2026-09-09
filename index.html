@@ -469,7 +469,7 @@ function addXP(n){bumpStreak();XP+=n;saveXP();updStats();}
 function myHSK(){try{return localStorage.getItem('hanyu_hsk')||'1';}catch(e){return '1';}}
 function scopeWords(){const L=parseInt(myHSK(),10)||1;return WORDS.filter(w=>(w.hsk||1)<=L);}
 function sentPool(){const L=parseInt(myHSK(),10)||1;return SENTENCES.filter(s=>(s.hsk||1)<=L);}
-function updStats(){const sc=scopeWords(),kn=sc.filter(w=>known.has(w.id)).length;document.getElementById('stats').textContent=`HSK ${myHSK()} • Umím ${kn} / ${sc.length} • ⚡ ${XP} XP • Lv ${lvl()} • 🔥 ${STREAK.n}`;document.getElementById('c-bar').style.width=(sc.length?kn/sc.length*100:0)+'%';const f=document.querySelector('footer');if(f)f.textContent=`${sc.length} slov HSK ${myHSK()} (kumulativně) • pinyin + čeština • 🔊 Xiaoxiao MP3 + záloha hlas zařízení • v6`;}
+function updStats(){const sc=scopeWords(),kn=sc.filter(w=>known.has(w.id)).length;document.getElementById('stats').textContent=`HSK ${myHSK()} • Umím ${kn} / ${sc.length} • ⚡ ${XP} XP • Lv ${lvl()} • 🔥 ${STREAK.n}`;document.getElementById('c-bar').style.width=(sc.length?kn/sc.length*100:0)+'%';const f=document.querySelector('footer');if(f)f.textContent=`${sc.length} slov HSK ${myHSK()} (kumulativně) • pinyin + čeština • 🔊 Xiaoxiao MP3 + záloha hlas zařízení • v7`;}
 function errW(id){return 1+3*(ERR[id]||0);}
 function recErr(id){ERR[id]=(ERR[id]||0)+1;saveErr();}
 function recOk(id){if(ERR[id]){ERR[id]--;if(!ERR[id])delete ERR[id];saveErr();}}
@@ -751,7 +751,8 @@ try{document.getElementById('s-hap').checked=localStorage.getItem('hanyu_hap')!=
 try{document.getElementById('s-hsk').value=myHSK();}catch(e){}
 try{document.getElementById('s-script').value=SCR();}catch(e){}
 updRemLabel();updHome();updateBadge();try{refreshPoolHints();}catch(e){}
-if('serviceWorker' in navigator){window.addEventListener('load',()=>{try{navigator.serviceWorker.register('sw.js').catch(()=>{});}catch(e){}});}}
+if('serviceWorker' in navigator){try{let _rl=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(_rl)return;_rl=true;try{toast('Aktualizuji na novou verzi…');setTimeout(()=>location.reload(),600);}catch(e){try{location.reload();}catch(_){}}});}catch(e){}
+window.addEventListener('load',()=>{try{navigator.serviceWorker.register('sw.js').catch(()=>{});}catch(e){}});}}
 // init
 refill();showCard();updStats();mDrawScore();newMatch();newListen();newSent();newPron();drawDict();initV3();
 </script>

@@ -107,8 +107,12 @@ Požadavek: telefon poslouchá a hodnotí, **data nikam neodejdou**. Verdikt po 
 - **Denní cíl 80 XP.** Znaky: na přání zůstává pinyin-first napořád, žádný znakový kurz se nechystá.
 
 ## 13) v6: slovník místo Anki + oprava zaseklé cache + testy
-- **Proč jsi viděl starou verzi:** service worker měl pořád `hanyu-v3`, takže prohlížeč servíroval staré soubory (důkaz: staré popisky úrovní na tvém screenshotu). Oprava: SW `hanyu-v6` + **verze v patičce** — když tam není v6, podrž refresh / odeber a znovu přidej ikonu na plochu.
 - **📖 Slovník (6. záložka dole)** nahrazuje Anki tab: pinyin + česky, **nula znaků**, klepnutí = přehrát, ✓ = umím, hledání bez diakritiky (kafe → kāfēi), filtry HSK 1/2 + kategorie + třetiny. Anki soubory zůstávají v repu (skripty), jen nejsou v UI.
 - **Kliknutí na slovo = přehrát** (kartičky, drill, tóny).
 - **Viditelné balíky:** pod každou úrovní je „Balík: N slov" — změna úrovně opravdu mění slova (ověřeno testem L1 = 57 slov).
 - **Testy:** `scripts/qa_func.py` — 21 funkčních testů v headless Chromiu (Playwright): kartičky bez znaků, XP, drill kola, tóny, slovník filtry, HSK přepínač, témata, 0 JS chyb. Ano — Chromium testy běží od začátku (`qa_shots.py` screenshoty všech záložek mobil + desktop).
+
+## 14) v7: vynucená migrace ze zaseklé cache
+- **Kořen problému:** SW měl verzi `hanyu-v3` od začátku, takže prohlížeč, který appku jednou načetl, servíroval staré soubory i po deployích (důkaz ze screenshotu: staré popisky úrovní, stará patička bez verze, 5 záložek).
+- **Oprava:** SW `hanyu-v7` + stránka se po převzetí nového SW **sama reloadne** (`controllerchange` → toast → reload). Verze je v patičce — když tam není v7, podrž refresh / odeber a znovu přidej ikonu na plochu.
+- **Testy:** `qa_func.py` má SW testy (registrace, control stránky, verzovaná cache) — 24/24 zelených.

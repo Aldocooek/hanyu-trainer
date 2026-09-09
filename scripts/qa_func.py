@@ -35,7 +35,7 @@ def main():
         pg.wait_for_timeout(1000)
 
         # 1. version badge + default state
-        check("footer shows v6", "v6" in (pg.text_content("footer") or ""))
+        check("footer shows v7", "v7" in (pg.text_content("footer") or ""))
         check("stats HSK1 scope", "HSK 1" in pg.text_content("#stats")
               and "/ 171" in pg.text_content("#stats"))
 
@@ -116,6 +116,19 @@ def main():
         check("settings: dark theme applies",
               pg.eval_on_selector("html", "e=>e.dataset.theme") == "dark")
         pg.select_option("#s-theme", "system")
+
+        # 8. service worker: registers, controls page, serves offline cache
+        pg.reload()
+        pg.wait_for_timeout(1500)
+        has_sw = pg.evaluate(
+            "()=>('serviceWorker' in navigator)")
+        controlled = pg.evaluate(
+            "()=>Promise.resolve(!!navigator.serviceWorker.controller)")
+        check("SW API present", has_sw)
+        check("SW controls page", controlled)
+        sw_ver = pg.evaluate(
+            "()=>caches.keys().then(ks=>ks.join(','))")
+        check("SW cache versioned", "hanyu-v" in sw_ver, f"({sw_ver})")
 
         check("no JS pageerrors", not errors, str(errors[:2]))
         b.close()

@@ -1,5 +1,5 @@
 /* Hanyu Trainer service worker: app shell cache-first, audio lazy-cache, CDN passthrough. */
-const V = 'hanyu-v6';
+const V = 'hanyu-v7';
 const CORE = ['./', 'index.html', 'words.js', 'manifest.json',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/icon-180.png'];
 self.addEventListener('install', e => {
